@@ -5,16 +5,22 @@ import { AppShell } from "@/components/layout/app-shell";
 import { TaskListView } from "@/components/tasks/task-list-view";
 import { TaskKanbanView } from "@/components/tasks/task-kanban-view";
 import { TaskCreateDialog } from "@/components/tasks/task-create-dialog";
+import { EisenhowerMatrix } from "@/components/tasks/eisenhower-matrix";
+import { FocusOverlay } from "@/components/focus-mode/focus-overlay";
+import { useFocusStore } from "@/stores/focus-store";
 import { Button } from "@/components/ui/button";
-import { LayoutList, Kanban, Plus, Search } from "lucide-react";
+import { LayoutList, Kanban, CalendarDays, Plus, Search, LayoutGrid } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { TaskCalendarView } from "@/components/tasks/task-calendar-view";
 
-type ViewMode = "list" | "kanban";
+type ViewMode = "list" | "kanban" | "calendar" | "matrix";
 
 export default function TasksPage() {
   const [view, setView] = useState<ViewMode>("list");
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+
+  const { isActive, taskId, taskTitle } = useFocusStore();
 
   return (
     <AppShell>
@@ -66,6 +72,27 @@ export default function TasksPage() {
               >
                 <Kanban className="w-4 h-4" />
               </button>
+              <button
+                onClick={() => setView("calendar")}
+                className={`p-2 rounded-md transition-colors ${
+                  view === "calendar"
+                    ? "bg-[#00D4FF]/20 text-[#00D4FF]"
+                    : "text-[#8888AA] hover:text-[#E8E8F0]"
+                }`}
+              >
+                <CalendarDays className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setView("matrix")}
+                className={`p-2 rounded-md transition-colors ${
+                  view === "matrix"
+                    ? "bg-[#00D4FF]/20 text-[#00D4FF]"
+                    : "text-[#8888AA] hover:text-[#E8E8F0]"
+                }`}
+                title="Eisenhower Matrix"
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
             </div>
 
             {/* Add Task */}
@@ -80,14 +107,18 @@ export default function TasksPage() {
         </div>
 
         {/* View Content */}
-        {view === "list" ? (
-          <TaskListView search={search} />
-        ) : (
-          <TaskKanbanView search={search} />
-        )}
+        {view === "list" && <TaskListView search={search} />}
+        {view === "kanban" && <TaskKanbanView search={search} />}
+        {view === "calendar" && <TaskCalendarView search={search} />}
+        {view === "matrix" && <EisenhowerMatrix search={search} />}
 
         <TaskCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
       </div>
+
+      {/* Focus Mode Overlay */}
+      {isActive && taskId && (
+        <FocusOverlay taskTitle={taskTitle} taskId={taskId} />
+      )}
     </AppShell>
   );
 }

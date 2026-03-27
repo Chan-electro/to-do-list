@@ -14,7 +14,9 @@ import {
   Settings,
   ChevronsLeft,
   ChevronsRight,
+  Trophy,
 } from "lucide-react";
+import { XpDisplay } from "@/components/gamification/xp-display";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/" },
@@ -141,6 +143,30 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* XP Display */}
+      <div className="flex-shrink-0 px-2 pb-1">
+        {collapsed ? (
+          <div className="flex justify-center py-2">
+            <Trophy
+              size={16}
+              style={{ color: "#FFB800", filter: "drop-shadow(0 0 5px rgba(255,184,0,0.6))" }}
+            />
+          </div>
+        ) : (
+          <AnimatePresence initial={false}>
+            <motion.div
+              key="xp-display"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <XpDisplay />
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </div>
 
       {/* Collapse Toggle */}
       <div className="flex-shrink-0 p-2 border-t border-white/10">

@@ -1,12 +1,39 @@
 "use client";
 
+import { useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { StickyNote } from "lucide-react";
+import { NoteList } from "@/components/notes/note-list";
+import { NoteEditor } from "@/components/notes/note-editor";
+import { QuickCaptureModal } from "@/components/notes/quick-capture-modal";
+import { trpc } from "@/lib/trpc/client";
 
 export default function NotesPage() {
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+  const utils = trpc.useUtils();
+
+  const createNote = trpc.note.create.useMutation({
+    onSuccess: (newNote) => {
+      utils.note.list.invalidate();
+      setSelectedNoteId(newNote.id);
+    },
+  });
+
+  const handleNewNote = () => {
+    createNote.mutate({
+      title: "Untitled",
+      contentMd: "",
+      folder: "inbox",
+    });
+  };
+
+  const handleClose = () => {
+    setSelectedNoteId(null);
+  };
+
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="flex flex-col h-full space-y-4">
+        {/* Page Header */}
         <div>
           <h1 className="text-2xl md:text-3xl font-mono font-bold">
             <span className="bg-gradient-to-r from-[#7B2FFF] to-[#00D4FF] bg-clip-text text-transparent">
@@ -14,20 +41,34 @@ export default function NotesPage() {
             </span>
           </h1>
           <p className="text-sm text-[#8888AA] mt-1">
-            Capture ideas and meeting notes
+            Capture ideas and meeting notes ·{" "}
+            <kbd className="text-[10px] font-mono border border-white/[0.1] rounded px-1 py-0.5 text-[#8888AA]/70">
+              Ctrl+Space
+            </kbd>{" "}
+            for quick capture
           </p>
         </div>
 
-        <div className="glass rounded-xl p-12 flex flex-col items-center justify-center text-center">
-          <StickyNote className="w-12 h-12 text-[#7B2FFF]/30 mb-4" />
-          <p className="text-lg font-mono text-[#8888AA]">
-            Notes Module coming in Phase 2
-          </p>
-          <p className="text-sm text-[#8888AA]/60 mt-1">
-            Markdown editor with full-text search
-          </p>
+        {/* Two-panel layout */}
+        <div className="flex gap-4 flex-1 min-h-0" style={{ height: "calc(100vh - 160px)" }}>
+          {/* Left panel — Note List (1/3) */}
+          <div className="w-1/3 min-w-[240px] flex-shrink-0">
+            <NoteList
+              onSelect={setSelectedNoteId}
+              selectedId={selectedNoteId}
+              onNew={handleNewNote}
+            />
+          </div>
+
+          {/* Right panel — Note Editor (2/3) */}
+          <div className="flex-1 min-w-0">
+            <NoteEditor noteId={selectedNoteId} onClose={handleClose} />
+          </div>
         </div>
       </div>
+
+      {/* Global Quick Capture (Ctrl+Space) */}
+      <QuickCaptureModal />
     </AppShell>
   );
 }
