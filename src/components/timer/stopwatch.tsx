@@ -44,9 +44,14 @@ export function Stopwatch() {
     setLaps([]);
   };
 
+  const btnBg = state === "running" ? "#EF4444" : "#2563EB";
+
   return (
     <div className="flex flex-col items-center">
-      <span className="text-sm font-mono uppercase tracking-widest text-[#4B8EFF] mb-6">
+      <span
+        className="text-sm uppercase tracking-widest font-semibold mb-6"
+        style={{ color: "#2563EB", fontFamily: "var(--font-dm-sans), sans-serif" }}
+      >
         Stopwatch
       </span>
 
@@ -58,7 +63,10 @@ export function Stopwatch() {
         animate={{ scale: [1, 1.01, 1] }}
         transition={{ duration: 0.2 }}
       >
-        <span className="text-6xl font-mono font-semibold text-[#F1F5F9]">
+        <span
+          className="text-6xl font-bold"
+          style={{ color: "#0F172A", fontFamily: "var(--font-jetbrains), monospace" }}
+        >
           {formatTime(seconds)}
         </span>
       </motion.div>
@@ -69,15 +77,15 @@ export function Stopwatch() {
           variant="ghost"
           size="icon"
           onClick={handleReset}
-          className="w-12 h-12 rounded-full text-[#94A3B8] hover:text-[#F1F5F9] transition-colors duration-200"
-          style={{ border: "1px solid rgba(75,142,255,0.2)" }}
+          className="w-12 h-12 rounded-full transition-colors duration-200"
+          style={{ border: "1px solid rgba(15, 23, 42, 0.12)", color: "#64748B" }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(75,142,255,0.4)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(37,99,235,0.3)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#2563EB";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(75,142,255,0.2)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(15,23,42,0.12)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#64748B";
           }}
         >
           <RotateCcw className="w-5 h-5" />
@@ -85,18 +93,8 @@ export function Stopwatch() {
 
         <Button
           onClick={() => setState(state === "running" ? "paused" : "running")}
-          className="w-16 h-16 rounded-xl active:scale-[0.97] transition-all duration-200 font-bold text-[#060B14]"
-          style={{
-            backgroundColor: state === "running" ? "#F87171" : "#4B8EFF",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              state === "running" ? "#FF8080" : "#5B9EFF";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              state === "running" ? "#F87171" : "#4B8EFF";
-          }}
+          className="w-16 h-16 rounded-xl active:scale-[0.97] transition-all duration-200 font-bold shadow-md"
+          style={{ backgroundColor: btnBg, color: "#FFFFFF" }}
         >
           {state === "running" ? (
             <Pause className="w-7 h-7" />
@@ -110,15 +108,13 @@ export function Stopwatch() {
           size="icon"
           onClick={handleLap}
           disabled={state !== "running"}
-          className="w-12 h-12 rounded-full text-[#4B8EFF] transition-colors duration-200 disabled:opacity-40"
-          style={{ border: "1px solid rgba(75,142,255,0.2)" }}
+          className="w-12 h-12 rounded-full transition-colors duration-200 disabled:opacity-40"
+          style={{ border: "1px solid rgba(15,23,42,0.12)", color: "#2563EB" }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(75,142,255,0.4)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(37,99,235,0.35)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(75,142,255,0.2)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(15,23,42,0.12)";
           }}
         >
           <Flag className="w-5 h-5" />
@@ -130,16 +126,19 @@ export function Stopwatch() {
         <div className="mt-6 w-full max-w-xs space-y-0">
           {laps.map((lapTime, i) => {
             const prevLap = i > 0 ? laps[i - 1] : 0;
-            const split = lapTime - prevLap;
+            const split = lapTime - (prevLap ?? 0);
             return (
               <div
                 key={i}
-                className="flex justify-between text-sm font-mono py-2"
-                style={{ borderBottom: "1px solid rgba(75,142,255,0.06)" }}
+                className="flex justify-between text-sm py-2"
+                style={{
+                  borderBottom: "1px solid rgba(15, 23, 42, 0.06)",
+                  fontFamily: "var(--font-jetbrains), monospace",
+                }}
               >
-                <span className="text-[#4B6080]">Lap {i + 1}</span>
-                <span className="text-[#94A3B8]">{formatTime(split)}</span>
-                <span className="text-[#F1F5F9]">{formatTime(lapTime)}</span>
+                <span style={{ color: "#94A3B8" }}>Lap {i + 1}</span>
+                <span style={{ color: "#64748B" }}>{formatTime(split)}</span>
+                <span style={{ color: "#0F172A", fontWeight: 500 }}>{formatTime(lapTime)}</span>
               </div>
             );
           })}

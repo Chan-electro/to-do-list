@@ -3,13 +3,12 @@
 import { motion } from "framer-motion";
 import { useGamificationStore } from "@/stores/gamification-store";
 
-// Softened rank colors for the Soft Mood theme
 const RANK_COLOR_MAP: Record<string, string> = {
   Rookie: "#94A3B8",
-  Operator: "#4B8EFF",
-  Commander: "#8B5CF6",
+  Operator: "#60A5FA",
+  Commander: "#A78BFA",
   Architect: "#FCD34D",
-  Legend: "#F87171",
+  Legend: "#FB7185",
 };
 
 export function XpDisplay() {
@@ -26,8 +25,8 @@ export function XpDisplay() {
     <div
       className="px-3 py-2 rounded-xl"
       style={{
-        background: "rgba(75, 142, 255, 0.05)",
-        border: "1px solid rgba(75, 142, 255, 0.1)",
+        background: "rgba(255, 255, 255, 0.06)",
+        border: "1px solid rgba(255, 255, 255, 0.08)",
       }}
     >
       {/* Rank row */}
@@ -35,24 +34,28 @@ export function XpDisplay() {
         <div className="flex items-center gap-1.5">
           <span className="text-base leading-none">{rank.icon}</span>
           <span
-            className="text-xs font-mono font-semibold uppercase tracking-wider"
-            style={{ color: rankColor }}
+            className="text-xs font-semibold uppercase tracking-wider"
+            style={{ color: rankColor, fontFamily: "var(--font-dm-sans), sans-serif" }}
           >
             {rank.name}
           </span>
         </div>
-        <span className="text-[10px] font-mono text-[#94A3B8]">
+        <span
+          className="text-[10px]"
+          style={{ color: "rgba(241,245,249,0.5)", fontFamily: "var(--font-jetbrains), monospace" }}
+        >
           {totalXp.toLocaleString()} XP
         </span>
       </div>
 
       {/* Progress bar */}
       <div
-        className="relative h-1.5 rounded-full overflow-hidden"
-        style={{ background: "rgba(75, 142, 255, 0.12)" }}
+        className="relative h-1 rounded-full overflow-hidden"
+        style={{ background: "rgba(255, 255, 255, 0.1)" }}
       >
         <motion.div
-          className="absolute inset-y-0 left-0 rounded-full bg-[#4B8EFF]"
+          className="absolute inset-y-0 left-0 rounded-full"
+          style={{ background: rankColor }}
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -61,11 +64,14 @@ export function XpDisplay() {
 
       {/* Next rank label */}
       {nextRank ? (
-        <p className="text-[9px] font-mono text-[#94A3B8] mt-1 text-right">
+        <p
+          className="text-[9px] mt-1 text-right"
+          style={{ color: "rgba(241,245,249,0.4)" }}
+        >
           {nextRank.minXp - totalXp} XP to {nextRank.name}
         </p>
       ) : (
-        <p className="text-[9px] font-mono mt-1 text-right" style={{ color: rankColor }}>
+        <p className="text-[9px] mt-1 text-right" style={{ color: rankColor }}>
           Max rank achieved
         </p>
       )}

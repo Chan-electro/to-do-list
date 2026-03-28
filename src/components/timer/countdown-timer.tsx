@@ -50,11 +50,14 @@ export function CountdownTimer() {
 
   const pct = target > 0 ? (remaining / target) * 100 : 0;
   const ringColor =
-    pct > 50 ? "#34D399" : pct > 20 ? "#FCD34D" : "#F87171";
+    pct > 50 ? "#10B981" : pct > 20 ? "#F59E0B" : "#EF4444";
 
   return (
     <div className="flex flex-col items-center">
-      <span className="text-sm font-mono uppercase tracking-widest text-[#4B8EFF] mb-6">
+      <span
+        className="text-sm uppercase tracking-widest font-semibold mb-6"
+        style={{ color: "#2563EB", fontFamily: "var(--font-dm-sans), sans-serif" }}
+      >
         Countdown
       </span>
 
@@ -64,18 +67,20 @@ export function CountdownTimer() {
           <button
             key={preset.label}
             onClick={() => selectPreset(preset.seconds)}
-            className="px-4 py-2 rounded-lg font-mono text-sm transition-colors duration-200"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
             style={
               target === preset.seconds
                 ? {
-                    background: "rgba(75,142,255,0.12)",
-                    color: "#4B8EFF",
-                    border: "1px solid rgba(75,142,255,0.25)",
+                    background: "#DBEAFE",
+                    color: "#1D4ED8",
+                    border: "1px solid rgba(37,99,235,0.25)",
+                    fontFamily: "var(--font-dm-sans), sans-serif",
                   }
                 : {
-                    background: "rgba(75,142,255,0.04)",
-                    color: "#94A3B8",
-                    border: "1px solid rgba(75,142,255,0.1)",
+                    background: "#F8FAFC",
+                    color: "#64748B",
+                    border: "1px solid rgba(15,23,42,0.08)",
+                    fontFamily: "var(--font-dm-sans), sans-serif",
                   }
             }
           >
@@ -92,8 +97,8 @@ export function CountdownTimer() {
             cy="100"
             r="88"
             fill="none"
-            stroke="rgba(75,142,255,0.1)"
-            strokeWidth="5"
+            stroke="rgba(15, 23, 42, 0.06)"
+            strokeWidth="6"
           />
           <circle
             cx="100"
@@ -101,7 +106,7 @@ export function CountdownTimer() {
             r="88"
             fill="none"
             stroke={ringColor}
-            strokeWidth="5"
+            strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray={2 * Math.PI * 88}
             strokeDashoffset={
@@ -111,7 +116,10 @@ export function CountdownTimer() {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-5xl font-mono font-semibold text-[#F1F5F9]">
+          <span
+            className="text-5xl font-bold"
+            style={{ color: "#0F172A", fontFamily: "var(--font-jetbrains), monospace" }}
+          >
             {formatTime(remaining)}
           </span>
         </div>
@@ -126,15 +134,15 @@ export function CountdownTimer() {
             setState("idle");
             setRemaining(target);
           }}
-          className="w-12 h-12 rounded-full text-[#94A3B8] hover:text-[#F1F5F9] transition-colors duration-200"
-          style={{ border: "1px solid rgba(75,142,255,0.2)" }}
+          className="w-12 h-12 rounded-full transition-colors duration-200"
+          style={{ border: "1px solid rgba(15,23,42,0.12)", color: "#64748B" }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(75,142,255,0.4)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(37,99,235,0.3)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#2563EB";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(75,142,255,0.2)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(15,23,42,0.12)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#64748B";
           }}
         >
           <RotateCcw className="w-5 h-5" />
@@ -142,18 +150,13 @@ export function CountdownTimer() {
 
         <Button
           onClick={() => setState(state === "running" ? "paused" : "running")}
-          className="w-16 h-16 rounded-xl active:scale-[0.97] transition-all duration-200 font-bold"
-          style={{
-            backgroundColor: "#4B8EFF",
-            color: "#060B14",
-          }}
+          className="w-16 h-16 rounded-xl active:scale-[0.97] transition-all duration-200 font-bold shadow-md"
+          style={{ backgroundColor: "#2563EB", color: "#FFFFFF" }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              "#5B9EFF";
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1D4ED8";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
-              "#4B8EFF";
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#2563EB";
           }}
         >
           {state === "running" ? (

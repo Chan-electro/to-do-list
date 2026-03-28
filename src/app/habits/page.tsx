@@ -18,32 +18,34 @@ export default function HabitsPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 page-enter">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-mono font-bold">
-              <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
-                Habits
-              </span>
+            <h1
+              className="text-3xl md:text-4xl font-bold"
+              style={{
+                fontFamily: "var(--font-playfair), serif",
+                color: "#0F172A",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Habits
             </h1>
-            <p className="text-sm mt-1 text-[#94A3B8]">
+            <p className="text-sm mt-1" style={{ color: "#64748B" }}>
               Track your daily disciplines
             </p>
           </div>
 
           <Button
             onClick={() => setCreateOpen(true)}
-            className="font-medium font-mono flex items-center gap-1.5 flex-shrink-0 active:scale-[0.97] transition-all duration-200"
-            style={{
-              background: "#4B8EFF",
-              color: "#060B14",
-            }}
+            className="font-medium flex items-center gap-1.5 flex-shrink-0 active:scale-[0.97] transition-all duration-200"
+            style={{ background: "#2563EB", color: "#FFFFFF" }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "#5B9EFF";
+              (e.currentTarget as HTMLButtonElement).style.background = "#1D4ED8";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = "#4B8EFF";
+              (e.currentTarget as HTMLButtonElement).style.background = "#2563EB";
             }}
           >
             <Plus className="w-4 h-4" />
@@ -55,8 +57,11 @@ export default function HabitsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Daily check-in (2/3 width) */}
           <div className="lg:col-span-2 space-y-3">
-            <h2 className="font-mono text-xs uppercase tracking-widest text-[#F1F5F9]">
-              Today's Check-in
+            <h2
+              className="text-xs uppercase tracking-widest font-semibold"
+              style={{ color: "#64748B", fontFamily: "var(--font-dm-sans), sans-serif" }}
+            >
+              Today&apos;s Check-in
             </h2>
             <HabitCheckIn />
           </div>
@@ -71,8 +76,11 @@ export default function HabitsPage() {
         {heatmapHabits.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Flame className="w-4 h-4" style={{ color: "#4B8EFF" }} />
-              <h2 className="font-mono text-xs uppercase tracking-widest text-[#F1F5F9]">
+              <Flame className="w-4 h-4" style={{ color: "#F59E0B" }} />
+              <h2
+                className="text-xs uppercase tracking-widest font-semibold"
+                style={{ color: "#64748B" }}
+              >
                 Progress Heatmaps
               </h2>
             </div>

@@ -10,15 +10,20 @@ import { TeamUtilization } from "@/components/analytics/team-utilization";
 export default function AnalyticsPage() {
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 page-enter">
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
-              Analytics
-            </span>
+          <h1
+            className="text-3xl md:text-4xl font-bold"
+            style={{
+              fontFamily: "var(--font-playfair), serif",
+              color: "#0F172A",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Analytics
           </h1>
-          <p className="text-sm text-[#94A3B8] mt-1 font-mono">
+          <p className="text-sm mt-1" style={{ color: "#64748B" }}>
             Your productivity nerve center
           </p>
         </div>

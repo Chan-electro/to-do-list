@@ -5,11 +5,11 @@ import { motion } from "framer-motion";
 import { format, subDays } from "date-fns";
 
 const INTENSITY_COLORS = [
-  "rgba(75, 142, 255, 0.05)",  // 0 – empty
-  "rgba(75, 142, 255, 0.20)",  // 1 – low
-  "rgba(75, 142, 255, 0.40)",  // 2 – medium
-  "rgba(75, 142, 255, 0.65)",  // 3 – high
-  "#4B8EFF",                   // 4 – max
+  "rgba(37, 99, 235, 0.06)",   // 0 – empty
+  "rgba(37, 99, 235, 0.18)",   // 1 – low
+  "rgba(37, 99, 235, 0.36)",   // 2 – medium
+  "rgba(37, 99, 235, 0.58)",   // 3 – high
+  "#2563EB",                    // 4 – max
 ];
 
 interface DayData {
@@ -27,7 +27,6 @@ export function WeeklyHeatmap() {
     const today = new Date();
     const generated: DayData[] = Array.from({ length: 7 }, (_, i) => {
       const date = subDays(today, 6 - i);
-      // deterministic-ish intensity from day-of-month so it looks realistic
       const seed = date.getDate() * 7 + date.getMonth();
       return {
         label: format(date, "EEE"),
@@ -40,19 +39,22 @@ export function WeeklyHeatmap() {
     setMounted(true);
   }, []);
 
-  // Skeleton placeholder until mounted (avoids hydration mismatch)
   if (!mounted) {
     return (
       <div className="glass rounded-2xl p-5">
-        <h2 className="text-base font-semibold text-[#F1F5F9] mb-4">This Week</h2>
+        <h2
+          className="text-base font-semibold mb-4"
+          style={{ color: "#0F172A", fontFamily: "var(--font-playfair), serif" }}
+        >
+          This Week
+        </h2>
         <div className="flex items-end justify-between gap-2">
           {Array.from({ length: 7 }).map((_, i) => (
             <div key={i} className="flex flex-col items-center gap-2 flex-1">
               <div
-                className="w-full aspect-square rounded-md"
-                style={{ backgroundColor: "rgba(75, 142, 255, 0.05)" }}
+                className="w-full aspect-square rounded-md skeleton"
               />
-              <span className="text-[10px] font-mono text-[#4B6080]">···</span>
+              <span className="text-[10px] font-mono text-[#94A3B8]">···</span>
             </div>
           ))}
         </div>
@@ -62,7 +64,12 @@ export function WeeklyHeatmap() {
 
   return (
     <div className="glass rounded-2xl p-5">
-      <h2 className="text-base font-semibold text-[#F1F5F9] mb-4">This Week</h2>
+      <h2
+        className="text-base font-semibold mb-4"
+        style={{ color: "#0F172A", fontFamily: "var(--font-playfair), serif" }}
+      >
+        This Week
+      </h2>
 
       <div className="flex items-end justify-between gap-2">
         {days.map((day, index) => (
@@ -79,14 +86,14 @@ export function WeeklyHeatmap() {
               style={{
                 backgroundColor: INTENSITY_COLORS[day.intensity],
                 boxShadow: day.isToday
-                  ? "0 0 0 1.5px #4B8EFF, 0 0 12px rgba(75,142,255,0.2)"
+                  ? "0 0 0 1.5px #2563EB, 0 0 8px rgba(37,99,235,0.15)"
                   : undefined,
               }}
               title={`${day.fullDate}: ${day.intensity === 0 ? "No activity" : `Level ${day.intensity}`}`}
             />
             <span
               className="text-[10px] font-mono select-none"
-              style={{ color: day.isToday ? "#4B8EFF" : "#94A3B8" }}
+              style={{ color: day.isToday ? "#2563EB" : "#94A3B8" }}
             >
               {day.label}
             </span>
@@ -96,15 +103,15 @@ export function WeeklyHeatmap() {
 
       {/* Legend */}
       <div className="flex items-center justify-end gap-1.5 mt-4">
-        <span className="text-[10px] text-[#4B6080]">Less</span>
+        <span className="text-[10px] text-[#94A3B8]">Less</span>
         {INTENSITY_COLORS.map((color, i) => (
           <div
             key={i}
             className="w-2.5 h-2.5 rounded-sm"
-            style={{ backgroundColor: color }}
+            style={{ backgroundColor: color, border: "1px solid rgba(15,23,42,0.06)" }}
           />
         ))}
-        <span className="text-[10px] text-[#4B6080]">More</span>
+        <span className="text-[10px] text-[#94A3B8]">More</span>
       </div>
     </div>
   );

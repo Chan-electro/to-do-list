@@ -29,29 +29,17 @@ export function FocusTimeChart() {
   const maxHours = Math.max(...chartData.map((d) => d.hours), 4);
 
   return (
-    <div
-      className="glass rounded-2xl p-5 h-full flex flex-col"
-      style={{
-        background: "rgba(11, 21, 36, 0.75)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(75, 142, 255, 0.12)",
-        transition: "border-color 200ms ease, transform 200ms ease",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.25)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-1px)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.12)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-      }}
-    >
+    <div className="glass rounded-2xl p-5 h-full flex flex-col card-lift">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-sm font-mono font-semibold text-[#94A3B8] uppercase tracking-widest">
-          Focus Time
-          <span className="text-[#4B6080] ml-1 normal-case font-normal">(hours/day)</span>
+        <h2
+          className="text-sm font-semibold uppercase tracking-widest"
+          style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+        >
+          Focus Time{" "}
+          <span className="normal-case font-normal" style={{ color: "#CBD5E1" }}>
+            (hours/day)
+          </span>
         </h2>
       </div>
 
@@ -61,43 +49,44 @@ export function FocusTimeChart() {
           <AreaChart data={chartData} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
             <defs>
               <linearGradient id="focusGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#4B8EFF" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#4B8EFF" stopOpacity={0} />
+                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.15} />
+                <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(75,142,255,0.06)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(15,23,42,0.05)" />
             <XAxis
               dataKey="day"
-              tick={{ fill: "#94A3B8", fontSize: 11, fontFamily: "monospace" }}
-              axisLine={{ stroke: "rgba(75,142,255,0.08)" }}
+              tick={{ fill: "#94A3B8", fontSize: 11, fontFamily: "var(--font-dm-sans), sans-serif" }}
+              axisLine={{ stroke: "rgba(15,23,42,0.07)" }}
               tickLine={false}
             />
             <YAxis
               domain={[0, Math.ceil(maxHours)]}
-              tick={{ fill: "#94A3B8", fontSize: 11, fontFamily: "monospace" }}
+              tick={{ fill: "#94A3B8", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#0F1D30",
-                border: "1px solid rgba(75,142,255,0.15)",
+                backgroundColor: "#FFFFFF",
+                border: "1px solid rgba(15,23,42,0.08)",
                 borderRadius: "10px",
-                color: "#F1F5F9",
+                color: "#0F172A",
                 fontSize: 12,
+                boxShadow: "0 4px 16px rgba(15,23,42,0.1)",
               }}
-              labelStyle={{ color: "#94A3B8" }}
+              labelStyle={{ color: "#64748B" }}
               formatter={(value) => [`${value}h`, "Focus"]}
-              cursor={{ stroke: "rgba(75,142,255,0.15)" }}
+              cursor={{ stroke: "rgba(37,99,235,0.1)" }}
             />
             <Area
               type="monotone"
               dataKey="hours"
-              stroke="#4B8EFF"
+              stroke="#2563EB"
               strokeWidth={2}
               fill="url(#focusGradient)"
-              dot={{ fill: "#4B8EFF", r: 3, strokeWidth: 0 }}
-              activeDot={{ r: 5, fill: "#93C5FD", strokeWidth: 0 }}
+              dot={{ fill: "#2563EB", r: 3, strokeWidth: 0 }}
+              activeDot={{ r: 5, fill: "#60A5FA", strokeWidth: 0 }}
             />
           </AreaChart>
         </ResponsiveContainer>
@@ -106,11 +95,19 @@ export function FocusTimeChart() {
       {/* Footer */}
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#4B8EFF]" />
-          <span className="text-[11px] font-mono text-[#94A3B8]">Daily focus hours</span>
+          <div className="w-2 h-2 rounded-full" style={{ background: "#2563EB" }} />
+          <span
+            className="text-[11px]"
+            style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+          >
+            Daily focus hours
+          </span>
         </div>
         {!isLoading && (
-          <span className="text-[11px] font-mono text-[#4B8EFF]">
+          <span
+            className="text-[11px] font-medium"
+            style={{ color: "#2563EB", fontFamily: "var(--font-dm-sans), sans-serif" }}
+          >
             Today: {focusHoursToday}h
           </span>
         )}

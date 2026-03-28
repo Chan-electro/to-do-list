@@ -11,15 +11,20 @@ import { AchievementsGrid } from "@/components/gamification/achievements-grid";
 export default function DashboardPage() {
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 page-enter">
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
-              Mission Control
-            </span>
+          <h1
+            className="text-3xl md:text-4xl font-bold"
+            style={{
+              fontFamily: "var(--font-playfair), serif",
+              color: "#0F172A",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Mission Control
           </h1>
-          <p className="text-sm mt-1" style={{ color: "#94A3B8" }}>
+          <p className="text-sm mt-1" style={{ color: "#64748B", fontFamily: "var(--font-dm-sans), sans-serif" }}>
             Your command center overview
           </p>
         </div>
@@ -42,7 +47,10 @@ export default function DashboardPage() {
             <QuickStats />
             <WeeklyHeatmap />
             <div className="glass rounded-2xl p-5">
-              <h2 className="text-lg font-mono font-semibold text-[#F1F5F9] mb-4">
+              <h2
+                className="text-base font-semibold mb-4"
+                style={{ color: "#0F172A", fontFamily: "var(--font-playfair), serif" }}
+              >
                 Achievements
               </h2>
               <AchievementsGrid />

@@ -21,17 +21,22 @@ function Toggle({
   return (
     <div
       className="flex items-center justify-between py-3 border-b"
-      style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+      style={{ borderColor: "rgba(15, 23, 42, 0.06)" }}
     >
-      <span className="text-sm text-[#94A3B8]">{label}</span>
+      <span
+        className="text-sm"
+        style={{ color: "#475569", fontFamily: "var(--font-dm-sans), sans-serif" }}
+      >
+        {label}
+      </span>
       <button
         onClick={onToggle}
         aria-pressed={checked}
         className="relative w-11 h-6 rounded-full transition-colors"
-        style={{ background: checked ? "#4B8EFF" : "rgba(75, 142, 255, 0.1)" }}
+        style={{ background: checked ? "#2563EB" : "rgba(15, 23, 42, 0.1)" }}
       >
         <span
-          className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+          className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
             checked ? "translate-x-6" : "translate-x-1"
           }`}
         />
@@ -48,16 +53,14 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className="glass rounded-2xl p-6 space-y-1"
-      style={{
-        background: "rgba(11, 21, 36, 0.75)",
-        border: "1px solid rgba(75, 142, 255, 0.12)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-      }}
-    >
-      <h2 className="text-lg font-semibold text-[#F1F5F9] mb-4">
+    <div className="glass rounded-2xl p-6 space-y-1">
+      <h2
+        className="text-lg font-semibold mb-4"
+        style={{
+          color: "#0F172A",
+          fontFamily: "var(--font-playfair), serif",
+        }}
+      >
         {title}
       </h2>
       {children}
@@ -83,9 +86,14 @@ function NumericInput({
   return (
     <div
       className="flex items-center justify-between py-3 border-b"
-      style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+      style={{ borderColor: "rgba(15, 23, 42, 0.06)" }}
     >
-      <span className="text-sm text-[#94A3B8]">{label}</span>
+      <span
+        className="text-sm"
+        style={{ color: "#475569", fontFamily: "var(--font-dm-sans), sans-serif" }}
+      >
+        {label}
+      </span>
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -96,21 +104,29 @@ function NumericInput({
             const v = Number(e.target.value);
             if (!isNaN(v) && v >= min && v <= max) onChange(v);
           }}
-          className="w-16 text-center text-sm font-mono rounded-lg px-2 py-1 outline-none transition-colors"
+          className="w-16 text-center text-sm rounded-lg px-2 py-1 outline-none transition-all"
           style={{
-            background: "rgba(75, 142, 255, 0.05)",
-            border: "1px solid rgba(75, 142, 255, 0.15)",
-            color: "#F1F5F9",
+            background: "#FFFFFF",
+            border: "1px solid rgba(15, 23, 42, 0.12)",
+            color: "#0F172A",
+            fontFamily: "var(--font-jetbrains), monospace",
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = "#4B8EFF";
+            e.currentTarget.style.borderColor = "#2563EB";
+            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)";
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = "rgba(75, 142, 255, 0.15)";
+            e.currentTarget.style.borderColor = "rgba(15,23,42,0.12)";
+            e.currentTarget.style.boxShadow = "none";
           }}
         />
         {unit && (
-          <span className="text-xs text-[#94A3B8] w-8">{unit}</span>
+          <span
+            className="text-xs w-8"
+            style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+          >
+            {unit}
+          </span>
         )}
       </div>
     </div>
@@ -150,13 +166,22 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6 max-w-2xl">
+      <div className="space-y-6 max-w-2xl page-enter">
         {/* Header */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-mono font-bold text-[#F1F5F9]">
+          <h1
+            className="text-3xl md:text-4xl font-bold"
+            style={{
+              fontFamily: "var(--font-playfair), serif",
+              color: "#0F172A",
+              letterSpacing: "-0.02em",
+            }}
+          >
             Settings
           </h1>
-          <p className="text-sm text-[#94A3B8] mt-1">Configure your command center</p>
+          <p className="text-sm mt-1" style={{ color: "#64748B" }}>
+            Configure your command center
+          </p>
         </div>
 
         {/* 1. Timer Settings */}
@@ -223,26 +248,40 @@ export default function SettingsPage() {
         {/* 4. Data & Backup */}
         <SectionCard title="Data & Backup">
           <div className="py-2 space-y-3">
-            <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+            <div className="grid grid-cols-2 gap-3 text-xs">
               <div
-                className="rounded-lg p-3"
+                className="rounded-xl p-3"
                 style={{
-                  background: "rgba(75, 142, 255, 0.03)",
-                  border: "1px solid rgba(75, 142, 255, 0.1)",
+                  background: "#F8FAFC",
+                  border: "1px solid rgba(15, 23, 42, 0.07)",
                 }}
               >
-                <span className="text-[#94A3B8]">Database</span>
-                <p className="text-[#F1F5F9] mt-1">SQLite (Local)</p>
+                <span style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                  Database
+                </span>
+                <p
+                  className="mt-1 font-medium"
+                  style={{ color: "#0F172A", fontFamily: "var(--font-dm-sans), sans-serif" }}
+                >
+                  SQLite (Local)
+                </p>
               </div>
               <div
-                className="rounded-lg p-3"
+                className="rounded-xl p-3"
                 style={{
-                  background: "rgba(75, 142, 255, 0.03)",
-                  border: "1px solid rgba(75, 142, 255, 0.1)",
+                  background: "#F8FAFC",
+                  border: "1px solid rgba(15, 23, 42, 0.07)",
                 }}
               >
-                <span className="text-[#94A3B8]">Backup</span>
-                <p className="text-[#F1F5F9] mt-1">Nightly cron</p>
+                <span style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                  Backup
+                </span>
+                <p
+                  className="mt-1 font-medium"
+                  style={{ color: "#0F172A", fontFamily: "var(--font-dm-sans), sans-serif" }}
+                >
+                  Nightly cron
+                </p>
               </div>
             </div>
             <DataExportPanel />
@@ -250,53 +289,38 @@ export default function SettingsPage() {
               href="/api/backup"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono transition-colors text-[#4B8EFF] hover:text-[#93C5FD]"
+              className="inline-flex items-center gap-1.5 text-xs transition-colors hover:underline"
+              style={{ color: "#2563EB", fontFamily: "var(--font-dm-sans), sans-serif" }}
             >
               /api/backup endpoint
-              <span className="opacity-60">→</span>
+              <span style={{ opacity: 0.6 }}>→</span>
             </a>
           </div>
         </SectionCard>
 
         {/* 5. About */}
         <SectionCard title="About">
-          <div className="py-2 space-y-3 text-sm font-mono">
-            <div className="flex items-baseline justify-between">
-              <span className="text-[#94A3B8]">Application</span>
-              <span className="text-[#4B6080]">Nexus Command Center</span>
-            </div>
-            <div
-              className="flex items-baseline justify-between border-b pb-3"
-              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
-            >
-              <span className="text-[#94A3B8]">Version</span>
-              <span className="text-[#4B6080]">1.0.0</span>
-            </div>
-            <div
-              className="flex items-baseline justify-between border-b pb-3"
-              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
-            >
-              <span className="text-[#94A3B8]">Built for</span>
-              <span className="text-[#4B6080]">Chandan B Krishna</span>
-            </div>
-            <div
-              className="flex items-baseline justify-between border-b pb-3"
-              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
-            >
-              <span className="text-[#94A3B8]">Framework</span>
-              <span className="text-[#4B6080]">Next.js + tRPC</span>
-            </div>
-            <div
-              className="flex items-baseline justify-between border-b pb-3"
-              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
-            >
-              <span className="text-[#94A3B8]">State</span>
-              <span className="text-[#4B6080]">Zustand + React Query</span>
-            </div>
-            <div className="flex items-baseline justify-between">
-              <span className="text-[#94A3B8]">Database</span>
-              <span className="text-[#4B6080]">Drizzle ORM + SQLite</span>
-            </div>
+          <div className="py-2 space-y-3 text-sm">
+            {[
+              { label: "Application", value: "Nexus Command Center" },
+              { label: "Version", value: "1.0.0" },
+              { label: "Built for", value: "Chandan B Krishna" },
+              { label: "Framework", value: "Next.js + tRPC" },
+              { label: "State", value: "Zustand + React Query" },
+              { label: "Database", value: "Drizzle ORM + SQLite" },
+            ].map(({ label, value }, i, arr) => (
+              <div
+                key={label}
+                className="flex items-baseline justify-between pb-3"
+                style={{
+                  borderBottom: i < arr.length - 1 ? "1px solid rgba(15,23,42,0.06)" : "none",
+                  fontFamily: "var(--font-dm-sans), sans-serif",
+                }}
+              >
+                <span style={{ color: "#94A3B8" }}>{label}</span>
+                <span style={{ color: "#475569", fontWeight: 500 }}>{value}</span>
+              </div>
+            ))}
           </div>
         </SectionCard>
       </div>

@@ -32,22 +32,28 @@ export default function NotesPage() {
 
   return (
     <AppShell>
-      <div
-        className="flex flex-col h-full space-y-4"
-        style={{ backgroundColor: "#060B14" }}
-      >
+      <div className="flex flex-col h-full space-y-4 page-enter">
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
-              Notes
-            </span>
+          <h1
+            className="text-3xl md:text-4xl font-bold"
+            style={{
+              fontFamily: "var(--font-playfair), serif",
+              color: "#0F172A",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Notes
           </h1>
-          <p className="text-sm text-[#94A3B8] mt-1">
+          <p className="text-sm mt-1" style={{ color: "#64748B" }}>
             Capture ideas and meeting notes ·{" "}
             <kbd
-              className="text-[10px] font-mono rounded px-1 py-0.5 text-[#94A3B8]"
-              style={{ border: "1px solid rgba(75,142,255,0.15)" }}
+              className="text-[10px] font-mono rounded px-1 py-0.5"
+              style={{
+                border: "1px solid rgba(15,23,42,0.12)",
+                color: "#64748B",
+                background: "#F1F5F9",
+              }}
             >
               Ctrl+Space
             </kbd>{" "}
@@ -63,7 +69,7 @@ export default function NotesPage() {
           {/* Left panel — Note List (1/3) */}
           <div
             className="w-1/3 min-w-[240px] flex-shrink-0"
-            style={{ borderRight: "1px solid rgba(75,142,255,0.1)" }}
+            style={{ borderRight: "1px solid rgba(15, 23, 42, 0.06)" }}
           >
             <NoteList
               onSelect={setSelectedNoteId}

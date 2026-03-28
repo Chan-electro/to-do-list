@@ -9,7 +9,8 @@ const stats = [
     key: "tasksCompleted",
     label: "Tasks Done",
     icon: CheckCircle2,
-    color: "#34D399",
+    color: "#10B981",
+    bg: "#D1FAE5",
     getValue: (data: DashboardData | undefined) =>
       String(data?.tasks.completedToday ?? 0),
   },
@@ -17,7 +18,8 @@ const stats = [
     key: "focusTime",
     label: "Focus Time",
     icon: Clock,
-    color: "#4B8EFF",
+    color: "#2563EB",
+    bg: "#DBEAFE",
     getValue: (data: DashboardData | undefined) => {
       const mins = data?.timer.focusMinutesToday ?? 0;
       const h = Math.floor(mins / 60);
@@ -29,7 +31,8 @@ const stats = [
     key: "habitsCompleted",
     label: "Habits",
     icon: Flame,
-    color: "#FCD34D",
+    color: "#F59E0B",
+    bg: "#FEF3C7",
     getValue: (data: DashboardData | undefined) =>
       `${data?.habits.completed ?? 0}/${data?.habits.total ?? 0}`,
   },
@@ -37,7 +40,8 @@ const stats = [
     key: "streak",
     label: "Best Streak",
     icon: Zap,
-    color: "#8B5CF6",
+    color: "#7C3AED",
+    bg: "#EDE9FE",
     getValue: (data: DashboardData | undefined) =>
       `${data?.habits.bestStreak?.streak ?? 0}d`,
   },
@@ -67,22 +71,40 @@ export function QuickStats() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className="flex flex-col items-center text-center rounded-lg p-3 hover:bg-[rgba(75,142,255,0.04)] transition-colors duration-200"
+              className="flex flex-col items-center text-center rounded-xl p-3 transition-colors duration-200"
+              style={{ background: "rgba(15, 23, 42, 0.02)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background = stat.bg + "50";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background = "rgba(15, 23, 42, 0.02)";
+              }}
             >
-              <Icon
-                className="w-5 h-5 mb-2"
-                style={{ color: stat.color }}
-              />
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center mb-2"
+                style={{ background: stat.bg }}
+              >
+                <Icon className="w-4 h-4" style={{ color: stat.color }} />
+              </div>
               {isLoading ? (
-                <div className="h-8 w-12 rounded bg-white/[0.05] animate-pulse" />
+                <div className="h-7 w-12 rounded skeleton" />
               ) : (
                 <span
-                  className="text-2xl font-mono font-bold text-[#F1F5F9]"
+                  className="text-2xl font-bold"
+                  style={{
+                    color: "#0F172A",
+                    fontFamily: "var(--font-jetbrains), monospace",
+                  }}
                 >
                   {stat.getValue(data as DashboardData | undefined)}
                 </span>
               )}
-              <span className="text-xs text-[#94A3B8] mt-1">{stat.label}</span>
+              <span
+                className="text-xs mt-1"
+                style={{ color: "#64748B", fontFamily: "var(--font-dm-sans), sans-serif" }}
+              >
+                {stat.label}
+              </span>
             </motion.div>
           );
         })}

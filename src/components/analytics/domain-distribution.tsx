@@ -9,11 +9,11 @@ import {
 } from "recharts";
 
 const DOMAIN_DATA = [
-  { name: "Personal", value: 18, color: "#34D399" },
-  { name: "Professional", value: 24, color: "#4B8EFF" },
-  { name: "AdGrades", value: 32, color: "#8B5CF6" },
-  { name: "Pure Blend", value: 14, color: "#FCD34D" },
-  { name: "Fresh & Fluffy", value: 12, color: "#F87171" },
+  { name: "Personal",     value: 18, color: "#10B981" },
+  { name: "Professional", value: 24, color: "#2563EB" },
+  { name: "AdGrades",     value: 32, color: "#7C3AED" },
+  { name: "Pure Blend",   value: 14, color: "#F59E0B" },
+  { name: "Fresh & Fluffy", value: 12, color: "#EF4444" },
 ];
 
 interface CustomTooltipProps {
@@ -27,17 +27,20 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
     return (
       <div
         style={{
-          backgroundColor: "#0F1D30",
-          border: "1px solid rgba(75,142,255,0.15)",
+          backgroundColor: "#FFFFFF",
+          border: "1px solid rgba(15,23,42,0.08)",
           borderRadius: "10px",
           padding: "8px 12px",
-          color: "#F1F5F9",
-          fontFamily: "monospace",
+          color: "#0F172A",
+          fontFamily: "var(--font-dm-sans), sans-serif",
           fontSize: "12px",
+          boxShadow: "0 4px 16px rgba(15,23,42,0.1)",
         }}
       >
-        <p style={{ color: item.payload.color, marginBottom: 2 }}>{item.name}</p>
-        <p style={{ color: "#F1F5F9" }}>{item.value} tasks</p>
+        <p style={{ color: item.payload.color, marginBottom: 2, fontWeight: 600 }}>
+          {item.name}
+        </p>
+        <p style={{ color: "#475569" }}>{item.value} tasks</p>
       </div>
     );
   }
@@ -48,27 +51,13 @@ export function DomainDistribution() {
   const total = DOMAIN_DATA.reduce((sum, d) => sum + d.value, 0);
 
   return (
-    <div
-      className="glass rounded-2xl p-5 h-full flex flex-col"
-      style={{
-        background: "rgba(11, 21, 36, 0.75)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(75, 142, 255, 0.12)",
-        transition: "border-color 200ms ease, transform 200ms ease",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.25)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-1px)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.12)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-      }}
-    >
+    <div className="glass rounded-2xl p-5 h-full flex flex-col card-lift">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-sm font-mono font-semibold text-[#94A3B8] uppercase tracking-widest">
+        <h2
+          className="text-sm font-semibold uppercase tracking-widest"
+          style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+        >
           Domain Distribution
         </h2>
       </div>
@@ -89,11 +78,7 @@ export function DomainDistribution() {
                 stroke="none"
               >
                 {DOMAIN_DATA.map((entry) => (
-                  <Cell
-                    key={entry.name}
-                    fill={entry.color}
-                    style={{ filter: `drop-shadow(0 0 4px ${entry.color}30)` }}
-                  />
+                  <Cell key={entry.name} fill={entry.color} />
                 ))}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
@@ -101,8 +86,18 @@ export function DomainDistribution() {
           </ResponsiveContainer>
           {/* Center label */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-2xl font-mono font-bold text-[#F1F5F9]">{total}</span>
-            <span className="text-[10px] text-[#94A3B8] font-mono tracking-wider">TASKS</span>
+            <span
+              className="text-2xl font-bold"
+              style={{ color: "#0F172A", fontFamily: "var(--font-jetbrains), monospace" }}
+            >
+              {total}
+            </span>
+            <span
+              className="text-[10px] tracking-wider"
+              style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+            >
+              TASKS
+            </span>
           </div>
         </div>
       </div>
@@ -118,11 +113,24 @@ export function DomainDistribution() {
                   className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                   style={{ backgroundColor: domain.color }}
                 />
-                <span className="text-xs font-mono text-[#94A3B8]">{domain.name}</span>
+                <span
+                  className="text-xs"
+                  style={{ color: "#475569", fontFamily: "var(--font-dm-sans), sans-serif" }}
+                >
+                  {domain.name}
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-[#F1F5F9]">{domain.value}</span>
-                <span className="text-[10px] font-mono text-[#4B6080] w-8 text-right">
+                <span
+                  className="text-xs font-semibold"
+                  style={{ color: "#0F172A", fontFamily: "var(--font-jetbrains), monospace" }}
+                >
+                  {domain.value}
+                </span>
+                <span
+                  className="text-[10px] w-8 text-right"
+                  style={{ color: "#94A3B8" }}
+                >
                   {pct}%
                 </span>
               </div>

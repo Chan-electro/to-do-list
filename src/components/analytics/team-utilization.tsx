@@ -12,23 +12,16 @@ import {
 } from "recharts";
 
 const TEAM_DATA = [
-  { name: "Self", tasks: 28 },
-  { name: "Maneesh", tasks: 14 },
-  { name: "Ashish", tasks: 11 },
+  { name: "Self",     tasks: 28 },
+  { name: "Maneesh",  tasks: 14 },
+  { name: "Ashish",   tasks: 11 },
   { name: "Likitesh", tasks: 9 },
-  { name: "Sumeeth", tasks: 7 },
-  { name: "Chandu", tasks: 5 },
+  { name: "Sumeeth",  tasks: 7 },
+  { name: "Chandu",   tasks: 5 },
 ];
 
-// Single blue for all bars — varying opacity for visual depth
-const BAR_COLORS = [
-  "#4B8EFF",
-  "#4B8EFF",
-  "#4B8EFF",
-  "#4B8EFF",
-  "#4B8EFF",
-  "#4B8EFF",
-];
+// Blue shades with decreasing opacity for depth
+const BAR_COLORS = ["#2563EB", "#3B82F6", "#60A5FA", "#93C5FD", "#BFDBFE", "#DBEAFE"];
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -41,17 +34,18 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
     return (
       <div
         style={{
-          backgroundColor: "#0F1D30",
-          border: "1px solid rgba(75,142,255,0.15)",
+          backgroundColor: "#FFFFFF",
+          border: "1px solid rgba(15,23,42,0.08)",
           borderRadius: "10px",
           padding: "8px 12px",
-          color: "#F1F5F9",
-          fontFamily: "monospace",
+          color: "#0F172A",
+          fontFamily: "var(--font-dm-sans), sans-serif",
           fontSize: "12px",
+          boxShadow: "0 4px 16px rgba(15,23,42,0.1)",
         }}
       >
-        <p style={{ color: "#94A3B8", marginBottom: 2 }}>{label}</p>
-        <p style={{ color: "#4B8EFF" }}>{payload[0].value} tasks</p>
+        <p style={{ color: "#64748B", marginBottom: 2 }}>{label}</p>
+        <p style={{ color: "#2563EB", fontWeight: 600 }}>{payload[0].value} tasks</p>
       </div>
     );
   }
@@ -60,39 +54,34 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
 
 export function TeamUtilization() {
   const maxTasks = Math.max(...TEAM_DATA.map((d) => d.tasks));
+  const totalTasks = TEAM_DATA.reduce((s, d) => s + d.tasks, 0);
 
   return (
-    <div
-      className="glass rounded-2xl p-5"
-      style={{
-        background: "rgba(11, 21, 36, 0.75)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(75, 142, 255, 0.12)",
-        transition: "border-color 200ms ease, transform 200ms ease",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.25)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-1px)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.12)";
-        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
-      }}
-    >
+    <div className="glass rounded-2xl p-5 card-lift">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-mono font-semibold text-[#94A3B8] uppercase tracking-widest">
+          <h2
+            className="text-sm font-semibold uppercase tracking-widest"
+            style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+          >
             Team Utilization
           </h2>
-          <p className="text-[11px] text-[#4B6080] font-mono mt-0.5">
+          <p
+            className="text-[11px] mt-0.5"
+            style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+          >
             Task count by assignee
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#4B8EFF]" />
-          <span className="text-[11px] font-mono text-[#94A3B8]">Active tasks</span>
+          <div className="w-2 h-2 rounded-full" style={{ background: "#2563EB" }} />
+          <span
+            className="text-[11px]"
+            style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+          >
+            Active tasks
+          </span>
         </div>
       </div>
 
@@ -103,27 +92,30 @@ export function TeamUtilization() {
           margin={{ top: 4, right: 8, bottom: 0, left: -16 }}
           barCategoryGap="30%"
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(75,142,255,0.06)" vertical={false} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="rgba(15,23,42,0.05)"
+            vertical={false}
+          />
           <XAxis
             dataKey="name"
-            tick={{ fill: "#94A3B8", fontSize: 11, fontFamily: "monospace" }}
-            axisLine={{ stroke: "rgba(75,142,255,0.08)" }}
+            tick={{ fill: "#94A3B8", fontSize: 11, fontFamily: "var(--font-dm-sans), sans-serif" }}
+            axisLine={{ stroke: "rgba(15,23,42,0.07)" }}
             tickLine={false}
           />
           <YAxis
             domain={[0, Math.ceil(maxTasks * 1.1)]}
-            tick={{ fill: "#94A3B8", fontSize: 11, fontFamily: "monospace" }}
+            tick={{ fill: "#94A3B8", fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(75,142,255,0.04)" }} />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: "rgba(37,99,235,0.04)" }}
+          />
           <Bar dataKey="tasks" radius={[4, 4, 0, 0]}>
             {TEAM_DATA.map((entry, index) => (
-              <Cell
-                key={entry.name}
-                fill={BAR_COLORS[index]}
-                opacity={1 - index * 0.1}
-              />
+              <Cell key={entry.name} fill={BAR_COLORS[index]} />
             ))}
           </Bar>
         </BarChart>
@@ -132,24 +124,38 @@ export function TeamUtilization() {
       {/* Bottom stats row */}
       <div className="mt-4 grid grid-cols-3 md:grid-cols-6 gap-2">
         {TEAM_DATA.map((member, index) => {
-          const pct = Math.round((member.tasks / TEAM_DATA.reduce((s, d) => s + d.tasks, 0)) * 100);
+          const pct = Math.round((member.tasks / totalTasks) * 100);
           return (
             <div
               key={member.name}
-              className="flex flex-col items-center p-2 rounded-lg"
-              style={{ background: "rgba(75, 142, 255, 0.03)" }}
+              className="flex flex-col items-center p-2 rounded-xl"
+              style={{
+                background: "rgba(37, 99, 235, 0.03)",
+                border: "1px solid rgba(15,23,42,0.04)",
+              }}
             >
               <div
-                className="w-2 h-2 rounded-full mb-1 bg-[#4B8EFF]"
-                style={{ opacity: 1 - index * 0.1 }}
+                className="w-2 h-2 rounded-full mb-1"
+                style={{ backgroundColor: BAR_COLORS[index] }}
               />
-              <span className="text-[10px] font-mono text-[#94A3B8] truncate w-full text-center">
+              <span
+                className="text-[10px] truncate w-full text-center"
+                style={{ color: "#64748B", fontFamily: "var(--font-dm-sans), sans-serif" }}
+              >
                 {member.name}
               </span>
-              <span className="text-xs font-mono font-semibold text-[#F1F5F9]">
+              <span
+                className="text-xs font-semibold"
+                style={{ color: "#0F172A", fontFamily: "var(--font-jetbrains), monospace" }}
+              >
                 {member.tasks}
               </span>
-              <span className="text-[9px] font-mono text-[#4B6080]">{pct}%</span>
+              <span
+                className="text-[9px]"
+                style={{ color: "#94A3B8" }}
+              >
+                {pct}%
+              </span>
             </div>
           );
         })}

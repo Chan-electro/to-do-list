@@ -24,16 +24,21 @@ export default function TasksPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6 page-enter">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-mono font-bold">
-              <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
-                Tasks
-              </span>
+            <h1
+              className="text-3xl md:text-4xl font-bold"
+              style={{
+                fontFamily: "var(--font-playfair), serif",
+                color: "#0F172A",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Tasks
             </h1>
-            <p className="text-sm mt-1" style={{ color: "#94A3B8" }}>
+            <p className="text-sm mt-1" style={{ color: "#64748B" }}>
               Manage your mission objectives
             </p>
           </div>
@@ -41,23 +46,24 @@ export default function TasksPage() {
           <div className="flex items-center gap-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#94A3B8" }} />
               <Input
                 placeholder="Search tasks..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 w-48 text-sm placeholder:text-[#4B6080] transition-all duration-200"
+                className="pl-9 w-48 text-sm transition-all duration-200"
                 style={{
-                  background: "rgba(75, 142, 255, 0.05)",
-                  border: "1px solid rgba(75, 142, 255, 0.15)",
-                  color: "#F1F5F9",
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(15, 23, 42, 0.12)",
+                  color: "#0F172A",
                 }}
                 onFocus={(e) => {
-                  (e.currentTarget as HTMLInputElement).style.borderColor = "#4B8EFF";
+                  (e.currentTarget as HTMLInputElement).style.borderColor = "#2563EB";
+                  (e.currentTarget as HTMLInputElement).style.boxShadow = "0 0 0 3px rgba(37,99,235,0.1)";
                 }}
                 onBlur={(e) => {
-                  (e.currentTarget as HTMLInputElement).style.borderColor =
-                    "rgba(75, 142, 255, 0.15)";
+                  (e.currentTarget as HTMLInputElement).style.borderColor = "rgba(15,23,42,0.12)";
+                  (e.currentTarget as HTMLInputElement).style.boxShadow = "none";
                 }}
               />
             </div>
@@ -66,8 +72,8 @@ export default function TasksPage() {
             <div
               className="flex items-center rounded-lg p-1"
               style={{
-                background: "rgba(11, 21, 36, 0.8)",
-                border: "1px solid rgba(75, 142, 255, 0.12)",
+                background: "#F1F5F9",
+                border: "1px solid rgba(15, 23, 42, 0.08)",
               }}
             >
               {(
@@ -84,9 +90,9 @@ export default function TasksPage() {
                   title={title}
                   className="p-2 rounded-md transition-all duration-200"
                   style={{
-                    background:
-                      view === mode ? "rgba(75, 142, 255, 0.15)" : "transparent",
-                    color: view === mode ? "#4B8EFF" : "#94A3B8",
+                    background: view === mode ? "#FFFFFF" : "transparent",
+                    color: view === mode ? "#2563EB" : "#94A3B8",
+                    boxShadow: view === mode ? "0 1px 3px rgba(15,23,42,0.08)" : "none",
                   }}
                 >
                   <Icon className="w-4 h-4" />
@@ -98,12 +104,12 @@ export default function TasksPage() {
             <Button
               onClick={() => setCreateOpen(true)}
               className="font-medium transition-all duration-150 active:scale-[0.96]"
-              style={{ background: "#4B8EFF", color: "#060B14" }}
+              style={{ background: "#2563EB", color: "#FFFFFF" }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#5B9EFF";
+                (e.currentTarget as HTMLButtonElement).style.background = "#1D4ED8";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#4B8EFF";
+                (e.currentTarget as HTMLButtonElement).style.background = "#2563EB";
               }}
             >
               <Plus className="w-4 h-4 mr-1" />
