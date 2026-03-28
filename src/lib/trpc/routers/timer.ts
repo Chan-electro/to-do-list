@@ -1,25 +1,26 @@
 import { z } from "zod";
 import { eq, desc, isNull, sql, and } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
-import { router, publicProcedure } from "@/lib/trpc/server";
+import { router, protectedProcedure } from "@/lib/trpc/server";
 import { db, schema } from "@/db";
 
 const { timeSessions } = schema;
 
 export const timerRouter = router({
-  startSession: publicProcedure
+  startSession: protectedProcedure
     .input(
       z.object({
         taskId: z.string().optional(),
         type: z.enum(["pomodoro", "stopwatch", "timer"]),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const id = uuid();
       const now = new Date().toISOString();
 
       await db.insert(timeSessions).values({
         id,
+        userId: ctx.userId,
         taskId: input.taskId ?? null,
         type: input.type,
         startedAt: now,
@@ -39,7 +40,7 @@ export const timerRouter = router({
       return created[0];
     }),
 
-  endSession: publicProcedure
+  endSession: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -47,7 +48,7 @@ export const timerRouter = router({
         completed: z.boolean(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const now = new Date().toISOString();
 
       await db
@@ -57,7 +58,12 @@ export const timerRouter = router({
           durationSeconds: input.durationSeconds,
           completed: input.completed,
         })
-        .where(eq(timeSessions.id, input.id));
+        .where(
+          and(
+            eq(timeSessions.id, input.id),
+            eq(timeSessions.userId, ctx.userId)
+          )
+        );
 
       const updated = await db
         .select()
@@ -68,25 +74,35 @@ export const timerRouter = router({
       return updated[0] ?? null;
     }),
 
-  getActive: publicProcedure.query(async () => {
+  getActive: protectedProcedure.query(async ({ ctx }) => {
     const result = await db
       .select()
       .from(timeSessions)
-      .where(isNull(timeSessions.endedAt))
+      .where(
+        and(
+          isNull(timeSessions.endedAt),
+          eq(timeSessions.userId, ctx.userId)
+        )
+      )
       .limit(1);
 
     return result[0] ?? null;
   }),
 
-  logDistraction: publicProcedure
+  logDistraction: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       await db
         .update(timeSessions)
         .set({
           distractionsCount: sql`${timeSessions.distractionsCount} + 1`,
         })
-        .where(eq(timeSessions.id, input.id));
+        .where(
+          and(
+            eq(timeSessions.id, input.id),
+            eq(timeSessions.userId, ctx.userId)
+          )
+        );
 
       const updated = await db
         .select()
@@ -97,25 +113,28 @@ export const timerRouter = router({
       return updated[0] ?? null;
     }),
 
-  getHistory: publicProcedure
+  getHistory: protectedProcedure
     .input(
-      z.object({
-        limit: z.number().int().positive().default(20),
-      }).optional()
+      z
+        .object({
+          limit: z.number().int().positive().default(20),
+        })
+        .optional()
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const limit = input?.limit ?? 20;
 
       const results = await db
         .select()
         .from(timeSessions)
+        .where(eq(timeSessions.userId, ctx.userId))
         .orderBy(desc(timeSessions.startedAt))
         .limit(limit);
 
       return results;
     }),
 
-  getStats: publicProcedure.query(async () => {
+  getStats: protectedProcedure.query(async ({ ctx }) => {
     const todayDate = new Date().toISOString().slice(0, 10);
 
     const todaySessions = await db
@@ -124,7 +143,8 @@ export const timerRouter = router({
       .where(
         and(
           sql`date(${timeSessions.startedAt}) = ${todayDate}`,
-          eq(timeSessions.completed, true)
+          eq(timeSessions.completed, true),
+          eq(timeSessions.userId, ctx.userId)
         )
       );
 
@@ -141,7 +161,12 @@ export const timerRouter = router({
     const allSessions = await db
       .select()
       .from(timeSessions)
-      .where(sql`date(${timeSessions.startedAt}) = ${todayDate}`);
+      .where(
+        and(
+          sql`date(${timeSessions.startedAt}) = ${todayDate}`,
+          eq(timeSessions.userId, ctx.userId)
+        )
+      );
 
     const sessionsWithDuration = allSessions.filter(
       (s) => (s.durationSeconds ?? 0) > 0

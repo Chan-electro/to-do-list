@@ -9,11 +9,12 @@ import { EisenhowerMatrix } from "@/components/tasks/eisenhower-matrix";
 import { FocusOverlay } from "@/components/focus-mode/focus-overlay";
 import { useFocusStore } from "@/stores/focus-store";
 import { Button } from "@/components/ui/button";
-import { LayoutList, Kanban, CalendarDays, Plus, Search, LayoutGrid } from "lucide-react";
+import { LayoutList, Kanban, CalendarDays, Plus, Search, LayoutGrid, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TaskCalendarView } from "@/components/tasks/task-calendar-view";
+import { TeamTaskList } from "@/components/tasks/team-task-list";
 
-type ViewMode = "list" | "kanban" | "calendar" | "matrix";
+type ViewMode = "list" | "kanban" | "calendar" | "matrix" | "team";
 
 export default function TasksPage() {
   const [view, setView] = useState<ViewMode>("list");
@@ -82,6 +83,7 @@ export default function TasksPage() {
                   { mode: "kanban", Icon: Kanban, title: "Kanban" },
                   { mode: "calendar", Icon: CalendarDays, title: "Calendar" },
                   { mode: "matrix", Icon: LayoutGrid, title: "Eisenhower Matrix" },
+                  { mode: "team", Icon: Users, title: "Team Tasks" },
                 ] as const
               ).map(({ mode, Icon, title }) => (
                 <button
@@ -123,6 +125,13 @@ export default function TasksPage() {
         {view === "kanban" && <TaskKanbanView search={search} />}
         {view === "calendar" && <TaskCalendarView search={search} />}
         {view === "matrix" && <EisenhowerMatrix search={search} />}
+        {view === "team" && (
+          <div
+            className="glass rounded-2xl p-6 card-lift"
+          >
+            <TeamTaskList />
+          </div>
+        )}
 
         <TaskCreateDialog open={createOpen} onOpenChange={setCreateOpen} />
       </div>

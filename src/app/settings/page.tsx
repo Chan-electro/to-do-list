@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { useSettings } from "@/stores/settings-store";
 import { useTimerStore } from "@/stores/timer-store";
 import { DataExportPanel } from "@/components/settings/data-export-panel";
+import { trpc } from "@/lib/trpc/client";
+import { useAuthStore } from "@/stores/auth-store";
+import { UserPlus, Trash2, User } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Reusable sub-components
@@ -129,6 +133,168 @@ function NumericInput({
           </span>
         )}
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Team Members sub-component
+// ---------------------------------------------------------------------------
+
+function TeamMembersSection() {
+  const { userId: currentUserId } = useAuthStore();
+  const [newName, setNewName] = useState("");
+  const [newPin, setNewPin] = useState("");
+  const [addError, setAddError] = useState("");
+
+  const { data: users = [], refetch } = trpc.auth.listUsers.useQuery();
+  const createUser = trpc.auth.createUser.useMutation({
+    onSuccess: () => {
+      setNewName("");
+      setNewPin("");
+      setAddError("");
+      refetch();
+    },
+    onError: (e) => setAddError(e.message),
+  });
+  const deleteUser = trpc.auth.deleteUser.useMutation({
+    onSuccess: () => refetch(),
+  });
+
+  function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    setAddError("");
+    if (!newName.trim() || !newPin.trim()) {
+      setAddError("Name and PIN are required.");
+      return;
+    }
+    createUser.mutate({ name: newName.trim(), pin: newPin.trim() });
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Member list */}
+      <div className="space-y-2">
+        {users.map((user) => (
+          <div
+            key={user.id}
+            className="flex items-center justify-between px-3 py-2.5 rounded-xl"
+            style={{
+              background: "#F8FAFC",
+              border: "1px solid rgba(15,23,42,0.06)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-semibold"
+                style={{
+                  background: "linear-gradient(135deg, #2563EB, #60A5FA)",
+                  color: "#fff",
+                }}
+              >
+                {user.name.slice(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <span
+                  className="text-sm font-medium"
+                  style={{ color: "#0F172A", fontFamily: "var(--font-dm-sans), sans-serif" }}
+                >
+                  {user.name}
+                </span>
+                {user.id === currentUserId && (
+                  <span
+                    className="ml-2 text-[10px] px-1.5 py-0.5 rounded-md"
+                    style={{ background: "#DBEAFE", color: "#1D4ED8" }}
+                  >
+                    You
+                  </span>
+                )}
+              </div>
+            </div>
+            {user.id !== currentUserId && (
+              <button
+                onClick={() => deleteUser.mutate({ userId: user.id })}
+                className="p-1.5 rounded-lg transition-colors"
+                style={{ color: "#94A3B8" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.color = "#EF4444";
+                  (e.currentTarget as HTMLButtonElement).style.background = "#FEE2E2";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.color = "#94A3B8";
+                  (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                }}
+                title="Remove member"
+              >
+                <Trash2 size={14} />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Add member form */}
+      <form onSubmit={handleAdd} className="space-y-2">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="Name"
+            className="flex-1 text-sm rounded-xl px-3 py-2 outline-none"
+            style={{
+              background: "#F8FAFC",
+              border: "1px solid rgba(15,23,42,0.1)",
+              color: "#0F172A",
+              fontFamily: "var(--font-dm-sans), sans-serif",
+            }}
+          />
+          <input
+            type="password"
+            value={newPin}
+            onChange={(e) => setNewPin(e.target.value)}
+            placeholder="PIN (digits)"
+            inputMode="numeric"
+            className="w-32 text-sm rounded-xl px-3 py-2 outline-none"
+            style={{
+              background: "#F8FAFC",
+              border: "1px solid rgba(15,23,42,0.1)",
+              color: "#0F172A",
+              fontFamily: "var(--font-dm-sans), sans-serif",
+            }}
+          />
+          <button
+            type="submit"
+            disabled={createUser.isPending}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium"
+            style={{
+              background: "#2563EB",
+              color: "#FFF",
+              fontFamily: "var(--font-dm-sans), sans-serif",
+              opacity: createUser.isPending ? 0.6 : 1,
+            }}
+          >
+            <UserPlus size={14} />
+            Add
+          </button>
+        </div>
+        {addError && (
+          <p
+            className="text-xs px-2 py-1.5 rounded-lg"
+            style={{
+              color: "#B91C1C",
+              background: "#FEE2E2",
+              fontFamily: "var(--font-dm-sans), sans-serif",
+            }}
+          >
+            {addError}
+          </p>
+        )}
+      </form>
     </div>
   );
 }
@@ -298,7 +464,20 @@ export default function SettingsPage() {
           </div>
         </SectionCard>
 
-        {/* 5. About */}
+        {/* 5. Team Members */}
+        <SectionCard title="Team Members">
+          <div className="py-2">
+            <p
+              className="text-xs mb-4"
+              style={{ color: "#94A3B8", fontFamily: "var(--font-dm-sans), sans-serif" }}
+            >
+              All team members can log in and see shared tasks. Individual tasks and habits remain private.
+            </p>
+            <TeamMembersSection />
+          </div>
+        </SectionCard>
+
+        {/* 6. About */}
         <SectionCard title="About">
           <div className="py-2 space-y-3 text-sm">
             {[

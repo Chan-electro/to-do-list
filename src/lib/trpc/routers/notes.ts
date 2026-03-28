@@ -1,53 +1,55 @@
 import { z } from "zod";
 import { eq, and, like, desc } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
-import { router, publicProcedure } from "@/lib/trpc/server";
+import { router, protectedProcedure } from "@/lib/trpc/server";
 import { db, schema } from "@/db";
 
 const { notes } = schema;
 
 export const noteRouter = router({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
-      z.object({
-        folder: z.string().optional(),
-        search: z.string().optional(),
-      }).optional()
+      z
+        .object({
+          folder: z.string().optional(),
+          search: z.string().optional(),
+        })
+        .optional()
     )
-    .query(async ({ input }) => {
-      const filters = [];
+    .query(async ({ input, ctx }) => {
+      const filters: ReturnType<typeof eq>[] = [];
+
+      filters.push(eq(notes.userId, ctx.userId));
 
       if (input?.folder) {
         filters.push(eq(notes.folder, input.folder));
       }
       if (input?.search) {
-        filters.push(
-          like(notes.title, `%${input.search}%`)
-        );
+        filters.push(like(notes.title, `%${input.search}%`));
       }
 
       const results = await db
         .select()
         .from(notes)
-        .where(filters.length > 0 ? and(...filters) : undefined)
+        .where(and(...filters))
         .orderBy(desc(notes.updatedAt));
 
       return results;
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const result = await db
         .select()
         .from(notes)
-        .where(eq(notes.id, input.id))
+        .where(and(eq(notes.id, input.id), eq(notes.userId, ctx.userId)))
         .limit(1);
 
       return result[0] ?? null;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(1).optional(),
@@ -57,12 +59,13 @@ export const noteRouter = router({
         isInbox: z.boolean().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const id = uuid();
       const now = new Date().toISOString();
 
       await db.insert(notes).values({
         id,
+        userId: ctx.userId,
         title: input.title ?? "Untitled",
         contentMd: input.contentMd ?? "",
         folder: input.folder ?? "inbox",
@@ -81,7 +84,7 @@ export const noteRouter = router({
       return created[0];
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -92,14 +95,14 @@ export const noteRouter = router({
         isInbox: z.boolean().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { id, ...fields } = input;
       const now = new Date().toISOString();
 
       await db
         .update(notes)
         .set({ ...fields, updatedAt: now })
-        .where(eq(notes.id, id));
+        .where(and(eq(notes.id, id), eq(notes.userId, ctx.userId)));
 
       const updated = await db
         .select()
@@ -110,10 +113,12 @@ export const noteRouter = router({
       return updated[0] ?? null;
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(async ({ input }) => {
-      await db.delete(notes).where(eq(notes.id, input.id));
+    .mutation(async ({ input, ctx }) => {
+      await db
+        .delete(notes)
+        .where(and(eq(notes.id, input.id), eq(notes.userId, ctx.userId)));
       return { success: true, id: input.id };
     }),
 });

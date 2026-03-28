@@ -2,8 +2,15 @@ import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import * as schema from "./schema";
 import { v4 as uuid } from "uuid";
+import { createHash } from "crypto";
 import path from "path";
 import fs from "fs";
+
+function hashPin(userId: string, pin: string): string {
+  return createHash("sha256")
+    .update(`${userId}:nexus:${pin}`)
+    .digest("hex");
+}
 
 const DB_PATH = process.env.DATABASE_URL || path.join(process.cwd(), "data", "nexus.db");
 const dbDir = path.dirname(DB_PATH);
@@ -141,11 +148,13 @@ async function seed() {
     );
   `);
 
-  // Seed default user
+  // Seed default user (PIN: 1234)
+  const defaultUserId = uuid();
   db.insert(schema.users).values({
-    id: uuid(),
+    id: defaultUserId,
     name: "Chandan",
-    settingsJson: JSON.stringify({ theme: "dark", timezone: "Asia/Kolkata" }),
+    pinHash: hashPin(defaultUserId, "1234"),
+    settingsJson: JSON.stringify({ timezone: "Asia/Kolkata" }),
   }).onConflictDoNothing().run();
 
   // Seed projects
@@ -157,10 +166,10 @@ async function seed() {
   };
 
   db.insert(schema.projects).values([
-    { id: projectIds.adgrades, name: "AdGrades", domain: "professional", color: "#00D4FF", icon: "building" },
-    { id: projectIds.pureBlend, name: "Pure Blend", domain: "professional", color: "#7B2FFF", icon: "coffee" },
-    { id: projectIds.freshFluffy, name: "Fresh And Fluffy", domain: "professional", color: "#00FF88", icon: "cake" },
-    { id: projectIds.personal, name: "Personal Growth", domain: "personal", color: "#FFB800", icon: "user" },
+    { id: projectIds.adgrades, userId: defaultUserId, name: "AdGrades", domain: "professional", color: "#00D4FF", icon: "building" },
+    { id: projectIds.pureBlend, userId: defaultUserId, name: "Pure Blend", domain: "professional", color: "#7B2FFF", icon: "coffee" },
+    { id: projectIds.freshFluffy, userId: defaultUserId, name: "Fresh And Fluffy", domain: "professional", color: "#00FF88", icon: "cake" },
+    { id: projectIds.personal, userId: defaultUserId, name: "Personal Growth", domain: "personal", color: "#FFB800", icon: "user" },
   ]).onConflictDoNothing().run();
 
   // Seed sample tasks
@@ -169,34 +178,34 @@ async function seed() {
   const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0];
 
   db.insert(schema.tasks).values([
-    { id: uuid(), title: "Review Q2 campaign strategy for Bon Millette", domain: "professional", projectId: projectIds.adgrades, priority: "P1", status: "todo", dueDate: tomorrow, estimatedMinutes: 60, assignee: "Self", tagsJson: JSON.stringify(["strategy", "client"]) },
-    { id: uuid(), title: "Design social media templates for Pure Blend", domain: "professional", projectId: projectIds.pureBlend, priority: "P2", status: "in_progress", dueDate: tomorrow, estimatedMinutes: 120, assignee: "Likitesh", tagsJson: JSON.stringify(["design", "social"]) },
-    { id: uuid(), title: "Fresh And Fluffy - product photography shoot", domain: "professional", projectId: projectIds.freshFluffy, priority: "P2", status: "todo", dueDate: nextWeek, estimatedMinutes: 180, assignee: "Ashish", tagsJson: JSON.stringify(["photography", "content"]) },
-    { id: uuid(), title: "Weekly team sync - AdGrades", domain: "professional", projectId: projectIds.adgrades, priority: "P1", status: "todo", dueDate: tomorrow, estimatedMinutes: 30, assignee: "Self", tagsJson: JSON.stringify(["meeting"]), recurrenceRule: "weekly" },
-    { id: uuid(), title: "Workout - Upper body", domain: "personal", priority: "P3", status: "todo", dueDate: tomorrow, estimatedMinutes: 45, tagsJson: JSON.stringify(["health", "fitness"]) },
-    { id: uuid(), title: "Read 30 pages - Atomic Habits", domain: "personal", priority: "P4", status: "todo", estimatedMinutes: 30, tagsJson: JSON.stringify(["reading", "learning"]) },
-    { id: uuid(), title: "Call Maneesh about new leads", domain: "professional", projectId: projectIds.adgrades, priority: "P2", status: "todo", dueDate: tomorrow + "T15:00", estimatedMinutes: 15, assignee: "Self", tagsJson: JSON.stringify(["sales", "leads"]) },
-    { id: uuid(), title: "Invoice clients for March", domain: "professional", projectId: projectIds.adgrades, priority: "P1", status: "todo", dueDate: nextWeek, estimatedMinutes: 60, tagsJson: JSON.stringify(["finance", "billing"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Review Q2 campaign strategy for Bon Millette", domain: "professional", projectId: projectIds.adgrades, priority: "P1", status: "todo", dueDate: tomorrow, estimatedMinutes: 60, assignee: "Self", tagsJson: JSON.stringify(["strategy", "client"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Design social media templates for Pure Blend", domain: "professional", projectId: projectIds.pureBlend, priority: "P2", status: "in_progress", dueDate: tomorrow, estimatedMinutes: 120, assignee: "Likitesh", tagsJson: JSON.stringify(["design", "social"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Fresh And Fluffy - product photography shoot", domain: "professional", projectId: projectIds.freshFluffy, priority: "P2", status: "todo", dueDate: nextWeek, estimatedMinutes: 180, assignee: "Ashish", tagsJson: JSON.stringify(["photography", "content"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Weekly team sync - AdGrades", domain: "professional", projectId: projectIds.adgrades, priority: "P1", status: "todo", dueDate: tomorrow, estimatedMinutes: 30, assignee: "Self", tagsJson: JSON.stringify(["meeting"]), recurrenceRule: "weekly" },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Workout - Upper body", domain: "personal", priority: "P3", status: "todo", dueDate: tomorrow, estimatedMinutes: 45, tagsJson: JSON.stringify(["health", "fitness"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Read 30 pages - Atomic Habits", domain: "personal", priority: "P4", status: "todo", estimatedMinutes: 30, tagsJson: JSON.stringify(["reading", "learning"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Call Maneesh about new leads", domain: "professional", projectId: projectIds.adgrades, priority: "P2", status: "todo", dueDate: tomorrow + "T15:00", estimatedMinutes: 15, assignee: "Self", tagsJson: JSON.stringify(["sales", "leads"]) },
+    { id: uuid(), userId: defaultUserId, createdByUserId: defaultUserId, title: "Invoice clients for March", domain: "professional", projectId: projectIds.adgrades, priority: "P1", status: "todo", dueDate: nextWeek, estimatedMinutes: 60, tagsJson: JSON.stringify(["finance", "billing"]) },
   ]).onConflictDoNothing().run();
 
   // Seed sample habits
   db.insert(schema.habits).values([
-    { id: uuid(), name: "Workout", category: "health", targetValue: 1, unit: "session", color: "#00FF88", icon: "dumbbell" },
-    { id: uuid(), name: "Water Intake", category: "health", targetValue: 8, unit: "glasses", color: "#00D4FF", icon: "droplets" },
-    { id: uuid(), name: "Reading", category: "learning", targetValue: 30, unit: "pages", color: "#FFB800", icon: "book-open" },
-    { id: uuid(), name: "Meditation", category: "mindfulness", targetValue: 10, unit: "minutes", color: "#7B2FFF", icon: "brain" },
-    { id: uuid(), name: "Client Check-ins", category: "professional", targetValue: 3, unit: "calls", color: "#FF3366", icon: "phone" },
+    { id: uuid(), userId: defaultUserId, name: "Workout", category: "health", targetValue: 1, unit: "session", color: "#00FF88", icon: "dumbbell" },
+    { id: uuid(), userId: defaultUserId, name: "Water Intake", category: "health", targetValue: 8, unit: "glasses", color: "#00D4FF", icon: "droplets" },
+    { id: uuid(), userId: defaultUserId, name: "Reading", category: "learning", targetValue: 30, unit: "pages", color: "#FFB800", icon: "book-open" },
+    { id: uuid(), userId: defaultUserId, name: "Meditation", category: "mindfulness", targetValue: 10, unit: "minutes", color: "#7B2FFF", icon: "brain" },
+    { id: uuid(), userId: defaultUserId, name: "Client Check-ins", category: "professional", targetValue: 3, unit: "calls", color: "#FF3366", icon: "phone" },
   ]).onConflictDoNothing().run();
 
   // Seed achievements (locked by default)
   db.insert(schema.achievements).values([
-    { id: uuid(), code: "first_task", name: "First Steps", description: "Complete your first task", icon: "rocket" },
-    { id: uuid(), code: "streak_7", name: "On Fire", description: "Maintain a 7-day streak", icon: "flame" },
-    { id: uuid(), code: "streak_30", name: "Unstoppable", description: "Maintain a 30-day streak", icon: "zap" },
-    { id: uuid(), code: "tasks_100", name: "Centurion", description: "Complete 100 tasks", icon: "award" },
-    { id: uuid(), code: "pomodoro_100", name: "Focus Master", description: "Complete 100 Pomodoro sessions", icon: "target" },
-    { id: uuid(), code: "early_bird", name: "Early Bird", description: "Complete a task before 7 AM", icon: "sunrise" },
-    { id: uuid(), code: "night_owl", name: "Night Owl", description: "Complete a task after 11 PM", icon: "moon" },
+    { id: uuid(), userId: defaultUserId, code: "first_task", name: "First Steps", description: "Complete your first task", icon: "rocket" },
+    { id: uuid(), userId: defaultUserId, code: "streak_7", name: "On Fire", description: "Maintain a 7-day streak", icon: "flame" },
+    { id: uuid(), userId: defaultUserId, code: "streak_30", name: "Unstoppable", description: "Maintain a 30-day streak", icon: "zap" },
+    { id: uuid(), userId: defaultUserId, code: "tasks_100", name: "Centurion", description: "Complete 100 tasks", icon: "award" },
+    { id: uuid(), userId: defaultUserId, code: "pomodoro_100", name: "Focus Master", description: "Complete 100 Pomodoro sessions", icon: "target" },
+    { id: uuid(), userId: defaultUserId, code: "early_bird", name: "Early Bird", description: "Complete a task before 7 AM", icon: "sunrise" },
+    { id: uuid(), userId: defaultUserId, code: "night_owl", name: "Night Owl", description: "Complete a task after 11 PM", icon: "moon" },
   ]).onConflictDoNothing().run();
 
   console.log("✅ Nexus database seeded successfully!");

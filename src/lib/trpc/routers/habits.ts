@@ -1,24 +1,29 @@
 import { z } from "zod";
 import { eq, and, desc, sql } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
-import { router, publicProcedure } from "@/lib/trpc/server";
+import { router, protectedProcedure } from "@/lib/trpc/server";
 import { db, schema } from "@/db";
 
 const { habits, habitLogs } = schema;
 
 export const habitRouter = router({
-  list: publicProcedure.query(async () => {
+  list: protectedProcedure.query(async ({ ctx }) => {
     const todayDate = new Date().toISOString().slice(0, 10);
 
     const allHabits = await db
       .select()
       .from(habits)
-      .where(eq(habits.isActive, true));
+      .where(and(eq(habits.isActive, true), eq(habits.userId, ctx.userId)));
 
     const todayLogs = await db
       .select()
       .from(habitLogs)
-      .where(eq(habitLogs.date, todayDate));
+      .where(
+        and(
+          eq(habitLogs.date, todayDate),
+          eq(habitLogs.userId, ctx.userId)
+        )
+      );
 
     const logsByHabitId = new Map(todayLogs.map((log) => [log.habitId, log]));
 
@@ -29,7 +34,7 @@ export const habitRouter = router({
     }));
   }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -42,12 +47,13 @@ export const habitRouter = router({
         icon: z.string().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const id = uuid();
       const now = new Date().toISOString();
 
       await db.insert(habits).values({
         id,
+        userId: ctx.userId,
         name: input.name,
         category: input.category ?? "custom",
         frequency: input.frequency ?? "daily",
@@ -71,21 +77,22 @@ export const habitRouter = router({
       return created[0];
     }),
 
-  toggleLog: publicProcedure
+  toggleLog: protectedProcedure
     .input(
       z.object({
         habitId: z.string(),
         date: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const existingLog = await db
         .select()
         .from(habitLogs)
         .where(
           and(
             eq(habitLogs.habitId, input.habitId),
-            eq(habitLogs.date, input.date)
+            eq(habitLogs.date, input.date),
+            eq(habitLogs.userId, ctx.userId)
           )
         )
         .limit(1);
@@ -102,8 +109,7 @@ export const habitRouter = router({
           })
           .where(eq(habitLogs.id, log.id));
 
-        // Update habit streak
-        await updateHabitStreak(input.habitId);
+        await updateHabitStreak(input.habitId, ctx.userId);
 
         const updated = await db
           .select()
@@ -118,6 +124,7 @@ export const habitRouter = router({
 
         await db.insert(habitLogs).values({
           id,
+          userId: ctx.userId,
           habitId: input.habitId,
           date: input.date,
           value: 1,
@@ -126,8 +133,7 @@ export const habitRouter = router({
           createdAt: now,
         });
 
-        // Update habit streak
-        await updateHabitStreak(input.habitId);
+        await updateHabitStreak(input.habitId, ctx.userId);
 
         const created = await db
           .select()
@@ -139,11 +145,11 @@ export const habitRouter = router({
       }
     }),
 
-  getStreaks: publicProcedure.query(async () => {
+  getStreaks: protectedProcedure.query(async ({ ctx }) => {
     const allHabits = await db
       .select()
       .from(habits)
-      .where(eq(habits.isActive, true));
+      .where(and(eq(habits.isActive, true), eq(habits.userId, ctx.userId)));
 
     return allHabits.map((habit) => ({
       id: habit.id,
@@ -155,9 +161,9 @@ export const habitRouter = router({
     }));
   }),
 
-  getHeatmap: publicProcedure
+  getHeatmap: protectedProcedure
     .input(z.object({ habitId: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const ninetyDaysAgo = new Date();
       ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
       const fromDate = ninetyDaysAgo.toISOString().slice(0, 10);
@@ -168,6 +174,7 @@ export const habitRouter = router({
         .where(
           and(
             eq(habitLogs.habitId, input.habitId),
+            eq(habitLogs.userId, ctx.userId),
             sql`${habitLogs.date} >= ${fromDate}`
           )
         )
@@ -177,12 +184,19 @@ export const habitRouter = router({
     }),
 });
 
-async function updateHabitStreak(habitId: string): Promise<void> {
+async function updateHabitStreak(
+  habitId: string,
+  userId: string
+): Promise<void> {
   const logs = await db
     .select()
     .from(habitLogs)
     .where(
-      and(eq(habitLogs.habitId, habitId), eq(habitLogs.completed, true))
+      and(
+        eq(habitLogs.habitId, habitId),
+        eq(habitLogs.userId, userId),
+        eq(habitLogs.completed, true)
+      )
     )
     .orderBy(desc(habitLogs.date));
 
@@ -194,7 +208,6 @@ async function updateHabitStreak(habitId: string): Promise<void> {
     return;
   }
 
-  // Calculate current streak (consecutive days ending today or yesterday)
   let streak = 0;
   const today = new Date();
 
@@ -213,7 +226,6 @@ async function updateHabitStreak(habitId: string): Promise<void> {
     }
   }
 
-  // Calculate best streak
   let bestStreak = 0;
   let currentRun = 1;
 

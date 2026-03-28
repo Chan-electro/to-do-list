@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@/lib/trpc/provider";
+import { AuthProvider } from "@/components/layout/auth-provider";
 import { CommandPalette } from "@/components/command-palette/command-palette";
 import { PWARegister } from "@/components/pwa-register";
 import { Toaster } from "sonner";
@@ -46,6 +47,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-background text-foreground font-sans antialiased">
         <TRPCProvider>
+          <AuthProvider>
           <PWARegister />
           {children}
           <CommandPalette />
@@ -61,6 +63,7 @@ export default function RootLayout({
               },
             }}
           />
+          </AuthProvider>
         </TRPCProvider>
       </body>
     </html>

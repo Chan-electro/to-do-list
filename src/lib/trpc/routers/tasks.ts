@@ -1,24 +1,34 @@
 import { z } from "zod";
-import { eq, and, like, desc, asc, sql, count } from "drizzle-orm";
+import { eq, and, like, desc, asc, sql, count, or } from "drizzle-orm";
 import { v4 as uuid } from "uuid";
-import { router, publicProcedure } from "@/lib/trpc/server";
+import { router, protectedProcedure } from "@/lib/trpc/server";
 import { db, schema } from "@/db";
 
 const { tasks } = schema;
 
 export const taskRouter = router({
-  list: publicProcedure
+  list: protectedProcedure
     .input(
-      z.object({
-        status: z.string().optional(),
-        priority: z.string().optional(),
-        domain: z.string().optional(),
-        assignee: z.string().optional(),
-        search: z.string().optional(),
-      }).optional()
+      z
+        .object({
+          status: z.string().optional(),
+          priority: z.string().optional(),
+          domain: z.string().optional(),
+          assignee: z.string().optional(),
+          search: z.string().optional(),
+        })
+        .optional()
     )
-    .query(async ({ input }) => {
-      const filters = [];
+    .query(async ({ input, ctx }) => {
+      const filters: ReturnType<typeof eq>[] = [];
+
+      // Only show user's own tasks OR shared tasks
+      filters.push(
+        or(
+          eq(tasks.userId, ctx.userId),
+          eq(tasks.isShared, 1)
+        ) as ReturnType<typeof eq>
+      );
 
       if (input?.status) {
         filters.push(eq(tasks.status, input.status));
@@ -27,7 +37,13 @@ export const taskRouter = router({
         filters.push(eq(tasks.priority, input.priority));
       }
       if (input?.domain) {
-        filters.push(eq(tasks.domain, input.domain));
+        // "team" domain returns only shared tasks
+        if (input.domain === "team") {
+          filters.push(eq(tasks.isShared, 1));
+        } else {
+          filters.push(eq(tasks.domain, input.domain));
+          filters.push(eq(tasks.userId, ctx.userId));
+        }
       }
       if (input?.assignee) {
         filters.push(eq(tasks.assignee, input.assignee));
@@ -39,25 +55,30 @@ export const taskRouter = router({
       const results = await db
         .select()
         .from(tasks)
-        .where(filters.length > 0 ? and(...filters) : undefined)
+        .where(and(...filters))
         .orderBy(asc(tasks.sortOrder), desc(tasks.createdAt));
 
       return results;
     }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const result = await db
         .select()
         .from(tasks)
-        .where(eq(tasks.id, input.id))
+        .where(
+          and(
+            eq(tasks.id, input.id),
+            or(eq(tasks.userId, ctx.userId), eq(tasks.isShared, 1)) as ReturnType<typeof eq>
+          )
+        )
         .limit(1);
 
       return result[0] ?? null;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(1),
@@ -72,14 +93,16 @@ export const taskRouter = router({
         assignee: z.string().optional(),
         recurrenceRule: z.string().optional(),
         parentTaskId: z.string().optional(),
+        isShared: z.boolean().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const id = uuid();
       const now = new Date().toISOString();
 
       await db.insert(tasks).values({
         id,
+        userId: ctx.userId,
         title: input.title,
         description: input.description ?? "",
         domain: input.domain ?? "personal",
@@ -89,10 +112,12 @@ export const taskRouter = router({
         dueDate: input.dueDate ?? null,
         estimatedMinutes: input.estimatedMinutes ?? null,
         tagsJson: input.tagsJson ?? "[]",
-        assignee: input.assignee ?? "Self",
+        assignee: input.assignee ?? ctx.userName ?? "Self",
         recurrenceRule: input.recurrenceRule ?? null,
         parentTaskId: input.parentTaskId ?? null,
         sortOrder: 0,
+        isShared: input.isShared ? 1 : 0,
+        createdByUserId: ctx.userId,
         createdAt: now,
         updatedAt: now,
       });
@@ -106,7 +131,7 @@ export const taskRouter = router({
       return created[0];
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -126,14 +151,20 @@ export const taskRouter = router({
         completedAt: z.string().nullable().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { id, ...fields } = input;
       const now = new Date().toISOString();
 
+      // Allow update if: own task OR shared task
       await db
         .update(tasks)
         .set({ ...fields, updatedAt: now })
-        .where(eq(tasks.id, id));
+        .where(
+          and(
+            eq(tasks.id, id),
+            or(eq(tasks.userId, ctx.userId), eq(tasks.isShared, 1)) as ReturnType<typeof eq>
+          )
+        );
 
       const updated = await db
         .select()
@@ -144,14 +175,17 @@ export const taskRouter = router({
       return updated[0] ?? null;
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(async ({ input }) => {
-      await db.delete(tasks).where(eq(tasks.id, input.id));
+    .mutation(async ({ input, ctx }) => {
+      // Only delete own tasks
+      await db
+        .delete(tasks)
+        .where(and(eq(tasks.id, input.id), eq(tasks.userId, ctx.userId)));
       return { success: true, id: input.id };
     }),
 
-  reorder: publicProcedure
+  reorder: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -173,13 +207,19 @@ export const taskRouter = router({
       return { success: true, updated: input.length };
     }),
 
-  getStats: publicProcedure.query(async () => {
+  getStats: protectedProcedure.query(async ({ ctx }) => {
     const rows = await db
       .select({
         status: tasks.status,
         count: count(),
       })
       .from(tasks)
+      .where(
+        or(
+          eq(tasks.userId, ctx.userId),
+          eq(tasks.isShared, 1)
+        ) as ReturnType<typeof eq>
+      )
       .groupBy(tasks.status);
 
     const stats: Record<string, number> = {
@@ -198,4 +238,54 @@ export const taskRouter = router({
 
     return { ...stats, total };
   }),
+
+  /** List only shared/team tasks */
+  listShared: protectedProcedure.query(async () => {
+    return db
+      .select()
+      .from(tasks)
+      .where(eq(tasks.isShared, 1))
+      .orderBy(asc(tasks.sortOrder), desc(tasks.createdAt));
+  }),
+
+  /** Create a shared/team task */
+  createShared: protectedProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        priority: z.string().optional(),
+        assignee: z.string().optional(),
+        dueDate: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const id = uuid();
+      const now = new Date().toISOString();
+
+      await db.insert(tasks).values({
+        id,
+        userId: ctx.userId,
+        title: input.title,
+        description: "",
+        domain: "team",
+        priority: input.priority ?? "P3",
+        status: "todo",
+        dueDate: input.dueDate ?? null,
+        tagsJson: "[]",
+        assignee: input.assignee ?? ctx.userName ?? "Team",
+        sortOrder: 0,
+        isShared: 1,
+        createdByUserId: ctx.userId,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      const created = await db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.id, id))
+        .limit(1);
+
+      return created[0];
+    }),
 });

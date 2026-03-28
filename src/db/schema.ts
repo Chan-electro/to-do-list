@@ -13,11 +13,13 @@ export const users = sqliteTable("users", {
 // ─── Projects ────────────────────────────────────────────────────────────────
 export const projects = sqliteTable("projects", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   name: text("name").notNull(),
   domain: text("domain").notNull().default("personal"),
   color: text("color").default("#00D4FF"),
   icon: text("icon").default("folder"),
   status: text("status").default("active"),
+  isShared: integer("is_shared").default(0),
   deadline: text("deadline"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
 });
@@ -25,6 +27,7 @@ export const projects = sqliteTable("projects", {
 // ─── Tasks ───────────────────────────────────────────────────────────────────
 export const tasks = sqliteTable("tasks", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   title: text("title").notNull(),
   description: text("description").default(""),
   domain: text("domain").notNull().default("personal"),
@@ -39,6 +42,8 @@ export const tasks = sqliteTable("tasks", {
   recurrenceRule: text("recurrence_rule"),
   parentTaskId: text("parent_task_id"),
   sortOrder: integer("sort_order").default(0),
+  isShared: integer("is_shared").default(0),
+  createdByUserId: text("created_by_user_id"),
   completedAt: text("completed_at"),
   createdAt: text("created_at").default(sql`(datetime('now'))`),
   updatedAt: text("updated_at").default(sql`(datetime('now'))`),
@@ -47,6 +52,7 @@ export const tasks = sqliteTable("tasks", {
 // ─── Habits ──────────────────────────────────────────────────────────────────
 export const habits = sqliteTable("habits", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   name: text("name").notNull(),
   category: text("category").notNull().default("custom"),
   frequency: text("frequency").notNull().default("daily"),
@@ -64,6 +70,7 @@ export const habits = sqliteTable("habits", {
 // ─── Habit Logs ──────────────────────────────────────────────────────────────
 export const habitLogs = sqliteTable("habit_logs", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   habitId: text("habit_id").notNull().references(() => habits.id),
   date: text("date").notNull(),
   value: real("value").default(0),
@@ -75,6 +82,7 @@ export const habitLogs = sqliteTable("habit_logs", {
 // ─── Time Sessions ───────────────────────────────────────────────────────────
 export const timeSessions = sqliteTable("time_sessions", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   taskId: text("task_id").references(() => tasks.id),
   type: text("type").notNull().default("pomodoro"), // pomodoro | stopwatch | timer
   startedAt: text("started_at").notNull(),
@@ -88,6 +96,7 @@ export const timeSessions = sqliteTable("time_sessions", {
 // ─── Notes ───────────────────────────────────────────────────────────────────
 export const notes = sqliteTable("notes", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   title: text("title").notNull().default("Untitled"),
   contentMd: text("content_md").default(""),
   folder: text("folder").default("inbox"),
@@ -100,6 +109,7 @@ export const notes = sqliteTable("notes", {
 // ─── Reminders ───────────────────────────────────────────────────────────────
 export const reminders = sqliteTable("reminders", {
   id: text("id").primaryKey(),
+  userId: text("user_id").references(() => users.id),
   taskId: text("task_id").references(() => tasks.id),
   triggerAt: text("trigger_at").notNull(),
   channel: text("channel").default("browser"),
@@ -111,7 +121,8 @@ export const reminders = sqliteTable("reminders", {
 // ─── Daily Scores ────────────────────────────────────────────────────────────
 export const dailyScores = sqliteTable("daily_scores", {
   id: text("id").primaryKey(),
-  date: text("date").notNull().unique(),
+  userId: text("user_id").references(() => users.id),
+  date: text("date").notNull(),
   tasksCompleted: integer("tasks_completed").default(0),
   focusMinutes: integer("focus_minutes").default(0),
   habitsDone: integer("habits_done").default(0),
@@ -122,7 +133,8 @@ export const dailyScores = sqliteTable("daily_scores", {
 // ─── Achievements ────────────────────────────────────────────────────────────
 export const achievements = sqliteTable("achievements", {
   id: text("id").primaryKey(),
-  code: text("code").notNull().unique(),
+  userId: text("user_id").references(() => users.id),
+  code: text("code").notNull(),
   name: text("name").notNull(),
   description: text("description"),
   icon: text("icon").default("trophy"),
@@ -130,6 +142,7 @@ export const achievements = sqliteTable("achievements", {
 });
 
 // ─── Type exports ────────────────────────────────────────────────────────────
+export type User = typeof users.$inferSelect;
 export type Task = typeof tasks.$inferSelect;
 export type NewTask = typeof tasks.$inferInsert;
 export type Project = typeof projects.$inferSelect;

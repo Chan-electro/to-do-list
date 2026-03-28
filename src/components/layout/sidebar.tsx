@@ -17,6 +17,7 @@ import {
   Trophy,
 } from "lucide-react";
 import { XpDisplay } from "@/components/gamification/xp-display";
+import { UserMenu } from "@/components/layout/user-menu";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/" },
@@ -141,6 +142,11 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* User Menu */}
+      <div className="flex-shrink-0 px-2 pb-1">
+        <UserMenu collapsed={collapsed} />
+      </div>
 
       {/* XP Display */}
       <div className="flex-shrink-0 px-2 pb-1">

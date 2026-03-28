@@ -1,20 +1,27 @@
-import { eq, and, isNull, sql, count } from "drizzle-orm";
-import { router, publicProcedure } from "@/lib/trpc/server";
+import { eq, and, isNull, sql, count, or } from "drizzle-orm";
+import { router, protectedProcedure } from "@/lib/trpc/server";
 import { db, schema } from "@/db";
 
 const { tasks, timeSessions, habits, habitLogs, dailyScores } = schema;
 
 export const dashboardRouter = router({
-  getSummary: publicProcedure.query(async () => {
+  getSummary: protectedProcedure.query(async ({ ctx }) => {
     const todayDate = new Date().toISOString().slice(0, 10);
+    const userId = ctx.userId;
 
-    // Task counts by status for today (all tasks, not filtered by date since tasks are ongoing)
+    // Task counts — include user's own + shared tasks
     const taskCountRows = await db
       .select({
         status: tasks.status,
         count: count(),
       })
       .from(tasks)
+      .where(
+        or(
+          eq(tasks.userId, userId),
+          eq(tasks.isShared, 1)
+        ) as ReturnType<typeof eq>
+      )
       .groupBy(tasks.status);
 
     const taskCounts: Record<string, number> = {
@@ -31,11 +38,19 @@ export const dashboardRouter = router({
 
     const totalTasks = taskCountRows.reduce((sum, r) => sum + r.count, 0);
 
-    // Tasks completed today specifically
+    // Tasks completed today
     const completedTodayRows = await db
       .select({ count: count() })
       .from(tasks)
-      .where(sql`date(${tasks.completedAt}) = ${todayDate}`);
+      .where(
+        and(
+          sql`date(${tasks.completedAt}) = ${todayDate}`,
+          or(
+            eq(tasks.userId, userId),
+            eq(tasks.isShared, 1)
+          ) as ReturnType<typeof eq>
+        )
+      );
 
     const tasksCompletedToday = completedTodayRows[0]?.count ?? 0;
 
@@ -43,17 +58,23 @@ export const dashboardRouter = router({
     const activeSession = await db
       .select()
       .from(timeSessions)
-      .where(isNull(timeSessions.endedAt))
+      .where(
+        and(
+          isNull(timeSessions.endedAt),
+          eq(timeSessions.userId, userId)
+        )
+      )
       .limit(1);
 
-    // Focus minutes today (from completed sessions)
+    // Focus minutes today
     const todaySessionRows = await db
       .select()
       .from(timeSessions)
       .where(
         and(
           sql`date(${timeSessions.startedAt}) = ${todayDate}`,
-          eq(timeSessions.completed, true)
+          eq(timeSessions.completed, true),
+          eq(timeSessions.userId, userId)
         )
       );
 
@@ -70,7 +91,7 @@ export const dashboardRouter = router({
     const activeHabits = await db
       .select()
       .from(habits)
-      .where(eq(habits.isActive, true));
+      .where(and(eq(habits.isActive, true), eq(habits.userId, userId)));
 
     const todayHabitLogs = await db
       .select()
@@ -78,7 +99,8 @@ export const dashboardRouter = router({
       .where(
         and(
           eq(habitLogs.date, todayDate),
-          eq(habitLogs.completed, true)
+          eq(habitLogs.completed, true),
+          eq(habitLogs.userId, userId)
         )
       );
 
@@ -89,23 +111,25 @@ export const dashboardRouter = router({
         ? Math.round((habitsCompleted / habitsTotal) * 100)
         : 0;
 
-    // Daily score / productivity score from daily_scores table
+    // Daily score
     const dailyScoreRow = await db
       .select()
       .from(dailyScores)
-      .where(eq(dailyScores.date, todayDate))
+      .where(
+        and(
+          eq(dailyScores.date, todayDate),
+          eq(dailyScores.userId, userId)
+        )
+      )
       .limit(1);
 
     const productivityScore = dailyScoreRow[0]?.productivityScore ?? 0;
     const totalXp = dailyScoreRow[0]?.totalXp ?? 0;
 
-    // Best habit streak across all active habits
+    // Best habit streak
     const bestStreakHabit = activeHabits.reduce(
-      (best, habit) => {
-        return (habit.streakCurrent ?? 0) > (best.streakCurrent ?? 0)
-          ? habit
-          : best;
-      },
+      (best, habit) =>
+        (habit.streakCurrent ?? 0) > (best.streakCurrent ?? 0) ? habit : best,
       activeHabits[0] ?? null
     );
 
