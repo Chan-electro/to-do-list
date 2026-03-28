@@ -76,7 +76,7 @@ export function AmbientPlayer() {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <p className="text-[10px] font-mono uppercase tracking-widest text-[#8888AA]">
+      <p className="text-[10px] font-mono uppercase tracking-widest text-[#94A3B8]">
         Ambient Sound
       </p>
       <div className="flex items-center gap-2">
@@ -94,21 +94,21 @@ export function AmbientPlayer() {
               style={
                 isActive
                   ? {
-                      borderColor: "rgba(0,212,255,0.4)",
-                      backgroundColor: "rgba(0,212,255,0.1)",
-                      color: "#00D4FF",
+                      borderColor: "rgba(75, 142, 255, 0.25)",
+                      backgroundColor: "rgba(75, 142, 255, 0.12)",
+                      color: "#4B8EFF",
                     }
                   : {
-                      borderColor: "rgba(255,255,255,0.06)",
-                      backgroundColor: "rgba(255,255,255,0.03)",
-                      color: "#8888AA",
+                      borderColor: "rgba(75, 142, 255, 0.1)",
+                      backgroundColor: "transparent",
+                      color: "#94A3B8",
                     }
               }
             >
               <Icon size={13} />
               <span>{label}</span>
               {notAvailable && id !== "none" && (
-                <span className="ml-1 text-[#FF3366]" title="Sound file not found">
+                <span className="ml-1 text-[#F87171]" title="Sound file not found">
                   ✕
                 </span>
               )}
@@ -117,7 +117,7 @@ export function AmbientPlayer() {
         })}
       </div>
       {isPlaying && selectedSound !== "none" && (
-        <p className="text-[10px] font-mono text-[#00FF88]/60 tracking-wider">
+        <p className="text-[10px] font-mono text-[#34D399]/70 tracking-wider">
           ● playing
         </p>
       )}

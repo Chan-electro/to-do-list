@@ -32,17 +32,23 @@ export default function NotesPage() {
 
   return (
     <AppShell>
-      <div className="flex flex-col h-full space-y-4">
+      <div
+        className="flex flex-col h-full space-y-4"
+        style={{ backgroundColor: "#060B14" }}
+      >
         {/* Page Header */}
         <div>
           <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#7B2FFF] to-[#00D4FF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
               Notes
             </span>
           </h1>
-          <p className="text-sm text-[#8888AA] mt-1">
+          <p className="text-sm text-[#94A3B8] mt-1">
             Capture ideas and meeting notes ·{" "}
-            <kbd className="text-[10px] font-mono border border-white/[0.1] rounded px-1 py-0.5 text-[#8888AA]/70">
+            <kbd
+              className="text-[10px] font-mono rounded px-1 py-0.5 text-[#94A3B8]"
+              style={{ border: "1px solid rgba(75,142,255,0.15)" }}
+            >
               Ctrl+Space
             </kbd>{" "}
             for quick capture
@@ -50,9 +56,15 @@ export default function NotesPage() {
         </div>
 
         {/* Two-panel layout */}
-        <div className="flex gap-4 flex-1 min-h-0" style={{ height: "calc(100vh - 160px)" }}>
+        <div
+          className="flex gap-4 flex-1 min-h-0"
+          style={{ height: "calc(100vh - 160px)" }}
+        >
           {/* Left panel — Note List (1/3) */}
-          <div className="w-1/3 min-w-[240px] flex-shrink-0">
+          <div
+            className="w-1/3 min-w-[240px] flex-shrink-0"
+            style={{ borderRight: "1px solid rgba(75,142,255,0.1)" }}
+          >
             <NoteList
               onSelect={setSelectedNoteId}
               selectedId={selectedNoteId}

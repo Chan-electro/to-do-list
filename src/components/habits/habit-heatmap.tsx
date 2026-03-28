@@ -33,7 +33,6 @@ function getMonthLabels(days: string[]): { label: string; colIndex: number }[] {
     const col = Math.floor(idx / 10);
     if (month !== lastMonth) {
       lastMonth = month;
-      // Only add if this column hasn't been added yet
       if (!labels.find((l) => l.colIndex === col)) {
         labels.push({ label: month, colIndex: col });
       }
@@ -45,34 +44,32 @@ function getMonthLabels(days: string[]): { label: string; colIndex: number }[] {
 export function HabitHeatmap({ habitId, habitName }: HabitHeatmapProps) {
   const { data: logs, isLoading } = trpc.habit.getHeatmap.useQuery({ habitId });
 
-  const days = buildDayGrid(); // 90 days
+  const days = buildDayGrid();
   const monthLabels = getMonthLabels(days);
 
   const completedSet = new Set(
     (logs ?? []).filter((l) => l.completed).map((l) => l.date)
   );
 
-  // 10 rows × 9 columns = 90 cells
   const ROWS = 10;
   const COLS = 9;
 
-  // Fill columns: days[0..9] = col 0, days[10..19] = col 1, etc.
   if (isLoading) {
     return (
       <div
         className="rounded-xl p-4"
         style={{
-          background: "rgba(26,26,62,0.6)",
+          background: "rgba(11,21,36,0.75)",
           backdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          border: "1px solid rgba(75,142,255,0.12)",
         }}
       >
-        <p className="font-mono text-xs mb-3" style={{ color: "#8888AA" }}>
+        <p className="font-mono text-xs mb-3 text-[#94A3B8]">
           {habitName}
         </p>
         <div
           className="h-24 rounded-lg animate-pulse"
-          style={{ background: "rgba(255,255,255,0.04)" }}
+          style={{ background: "rgba(75,142,255,0.04)" }}
         />
       </div>
     );
@@ -83,12 +80,12 @@ export function HabitHeatmap({ habitId, habitName }: HabitHeatmapProps) {
       <div
         className="rounded-xl p-4"
         style={{
-          background: "rgba(26,26,62,0.6)",
+          background: "rgba(11,21,36,0.75)",
           backdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          border: "1px solid rgba(75,142,255,0.12)",
         }}
       >
-        <p className="font-mono text-xs font-medium mb-3" style={{ color: "#E8E8F0" }}>
+        <p className="font-mono text-xs font-medium mb-3 text-[#F1F5F9]">
           {habitName}
         </p>
 
@@ -102,8 +99,7 @@ export function HabitHeatmap({ habitId, habitName }: HabitHeatmapProps) {
             return (
               <div
                 key={colIdx}
-                className="font-mono text-[9px] text-center"
-                style={{ color: "#8888AA" }}
+                className="font-mono text-[9px] text-center text-[#94A3B8]"
               >
                 {label ? label.label : ""}
               </div>
@@ -144,9 +140,9 @@ export function HabitHeatmap({ habitId, habitName }: HabitHeatmapProps) {
                       className="rounded-sm aspect-square cursor-default transition-opacity hover:opacity-80"
                       style={{
                         background: completed
-                          ? "rgba(0, 212, 255, 0.75)"
-                          : "rgba(255,255,255,0.04)",
-                        outline: isToday ? "1px solid rgba(0,212,255,0.5)" : "none",
+                          ? "rgba(75, 142, 255, 0.7)"
+                          : "rgba(75,142,255,0.04)",
+                        outline: isToday ? "1px solid #4B8EFF" : "none",
                         outlineOffset: "1px",
                       }}
                     />
@@ -154,15 +150,15 @@ export function HabitHeatmap({ habitId, habitName }: HabitHeatmapProps) {
                   <TooltipContent
                     className="font-mono text-xs"
                     style={{
-                      background: "#12122A",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      color: "#E8E8F0",
+                      background: "#0B1524",
+                      border: "1px solid rgba(75,142,255,0.15)",
+                      color: "#F1F5F9",
                     }}
                   >
                     <span>{formattedDate}</span>
                     <span
                       className="ml-2"
-                      style={{ color: completed ? "#00FF88" : "#8888AA" }}
+                      style={{ color: completed ? "#34D399" : "#94A3B8" }}
                     >
                       {completed ? "Completed" : "Not done"}
                     </span>
@@ -175,24 +171,20 @@ export function HabitHeatmap({ habitId, habitName }: HabitHeatmapProps) {
 
         {/* Legend */}
         <div className="flex items-center gap-2 mt-3">
-          <span className="font-mono text-[10px]" style={{ color: "#8888AA" }}>
-            Less
-          </span>
-          {[0.04, 0.25, 0.5, 0.75, 1].map((opacity, i) => (
+          <span className="font-mono text-[10px] text-[#94A3B8]">Less</span>
+          {[0.04, 0.25, 0.5, 0.7, 1].map((opacity, i) => (
             <div
               key={i}
               className="w-2.5 h-2.5 rounded-sm"
               style={{
                 background:
                   i === 0
-                    ? "rgba(255,255,255,0.04)"
-                    : `rgba(0,212,255,${opacity})`,
+                    ? "rgba(75,142,255,0.04)"
+                    : `rgba(75,142,255,${opacity})`,
               }}
             />
           ))}
-          <span className="font-mono text-[10px]" style={{ color: "#8888AA" }}>
-            More
-          </span>
+          <span className="font-mono text-[10px] text-[#94A3B8]">More</span>
         </div>
       </div>
     </TooltipProvider>

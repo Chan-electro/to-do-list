@@ -29,11 +29,11 @@ export default function TasksPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-mono font-bold">
-              <span className="bg-gradient-to-r from-[#00D4FF] to-[#7B2FFF] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
                 Tasks
               </span>
             </h1>
-            <p className="text-sm text-[#8888AA] mt-1">
+            <p className="text-sm mt-1" style={{ color: "#94A3B8" }}>
               Manage your mission objectives
             </p>
           </div>
@@ -41,64 +41,70 @@ export default function TasksPage() {
           <div className="flex items-center gap-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8888AA]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
               <Input
                 placeholder="Search tasks..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 w-48 bg-white/[0.05] border-white/[0.06] text-sm"
+                className="pl-9 w-48 text-sm placeholder:text-[#4B6080] transition-all duration-200"
+                style={{
+                  background: "rgba(75, 142, 255, 0.05)",
+                  border: "1px solid rgba(75, 142, 255, 0.15)",
+                  color: "#F1F5F9",
+                }}
+                onFocus={(e) => {
+                  (e.currentTarget as HTMLInputElement).style.borderColor = "#4B8EFF";
+                }}
+                onBlur={(e) => {
+                  (e.currentTarget as HTMLInputElement).style.borderColor =
+                    "rgba(75, 142, 255, 0.15)";
+                }}
               />
             </div>
 
             {/* View Toggle */}
-            <div className="flex items-center glass rounded-lg p-1">
-              <button
-                onClick={() => setView("list")}
-                className={`p-2 rounded-md transition-colors ${
-                  view === "list"
-                    ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                    : "text-[#8888AA] hover:text-[#E8E8F0]"
-                }`}
-              >
-                <LayoutList className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setView("kanban")}
-                className={`p-2 rounded-md transition-colors ${
-                  view === "kanban"
-                    ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                    : "text-[#8888AA] hover:text-[#E8E8F0]"
-                }`}
-              >
-                <Kanban className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setView("calendar")}
-                className={`p-2 rounded-md transition-colors ${
-                  view === "calendar"
-                    ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                    : "text-[#8888AA] hover:text-[#E8E8F0]"
-                }`}
-              >
-                <CalendarDays className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setView("matrix")}
-                className={`p-2 rounded-md transition-colors ${
-                  view === "matrix"
-                    ? "bg-[#00D4FF]/20 text-[#00D4FF]"
-                    : "text-[#8888AA] hover:text-[#E8E8F0]"
-                }`}
-                title="Eisenhower Matrix"
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
+            <div
+              className="flex items-center rounded-lg p-1"
+              style={{
+                background: "rgba(11, 21, 36, 0.8)",
+                border: "1px solid rgba(75, 142, 255, 0.12)",
+              }}
+            >
+              {(
+                [
+                  { mode: "list", Icon: LayoutList, title: "List" },
+                  { mode: "kanban", Icon: Kanban, title: "Kanban" },
+                  { mode: "calendar", Icon: CalendarDays, title: "Calendar" },
+                  { mode: "matrix", Icon: LayoutGrid, title: "Eisenhower Matrix" },
+                ] as const
+              ).map(({ mode, Icon, title }) => (
+                <button
+                  key={mode}
+                  onClick={() => setView(mode)}
+                  title={title}
+                  className="p-2 rounded-md transition-all duration-200"
+                  style={{
+                    background:
+                      view === mode ? "rgba(75, 142, 255, 0.15)" : "transparent",
+                    color: view === mode ? "#4B8EFF" : "#94A3B8",
+                  }}
+                >
+                  <Icon className="w-4 h-4" />
+                </button>
+              ))}
             </div>
 
             {/* Add Task */}
             <Button
               onClick={() => setCreateOpen(true)}
-              className="bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0A0A1A] font-medium"
+              className="font-medium transition-all duration-150 active:scale-[0.96]"
+              style={{ background: "#4B8EFF", color: "#060B14" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#5B9EFF";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#4B8EFF";
+              }}
             >
               <Plus className="w-4 h-4 mr-1" />
               Add Task

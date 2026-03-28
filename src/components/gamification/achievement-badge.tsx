@@ -29,19 +29,17 @@ export function AchievementBadge({
         style={
           unlocked
             ? {
-                background: "rgba(26,26,62,0.6)",
-                backdropFilter: "blur(12px)",
-                borderColor: "rgba(0,212,255,0.25)",
-                boxShadow: "0 0 16px rgba(0,212,255,0.15)",
+                background: "rgba(75, 142, 255, 0.08)",
+                borderColor: "rgba(75, 142, 255, 0.2)",
+                boxShadow: "0 0 20px rgba(75, 142, 255, 0.15)",
               }
             : {
-                background: "rgba(10,10,26,0.5)",
-                backdropFilter: "blur(8px)",
-                borderColor: "rgba(255,255,255,0.04)",
+                background: "rgba(75, 142, 255, 0.03)",
+                borderColor: "rgba(75, 142, 255, 0.06)",
               }
         }
         whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.15 }}
+        transition={{ duration: 0.2 }}
       >
         {/* Icon */}
         <span
@@ -54,15 +52,18 @@ export function AchievementBadge({
         {/* Name */}
         <span
           className="text-[9px] font-mono text-center px-1 leading-tight"
-          style={{ color: unlocked ? "#E8E8F0" : "#8888AA", opacity: unlocked ? 1 : 0.4 }}
+          style={{ color: unlocked ? "#F1F5F9" : "#4B6080" }}
         >
           {name}
         </span>
 
         {/* Lock overlay */}
         {!unlocked && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#0A0A1A]/40 rounded-xl">
-            <Lock className="w-4 h-4 text-[#8888AA] opacity-60" />
+          <div
+            className="absolute inset-0 flex items-center justify-center rounded-xl"
+            style={{ background: "rgba(6, 11, 20, 0.4)" }}
+          >
+            <Lock className="w-4 h-4 text-[#4B6080] opacity-60" />
           </div>
         )}
       </motion.div>
@@ -77,20 +78,33 @@ export function AchievementBadge({
             transition={{ duration: 0.12 }}
             className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-44 pointer-events-none"
           >
-            <div className="rounded-lg border border-white/[0.08] bg-[#12122A] px-3 py-2 text-center shadow-xl">
-              <p className="text-xs font-semibold text-[#E8E8F0] mb-0.5">{name}</p>
-              <p className="text-[10px] text-[#8888AA] leading-snug">{description}</p>
+            <div
+              className="rounded-lg px-3 py-2 text-center shadow-xl"
+              style={{
+                background: "#0F1D30",
+                border: "1px solid rgba(75, 142, 255, 0.15)",
+              }}
+            >
+              <p className="text-xs font-semibold text-[#F1F5F9] mb-0.5">{name}</p>
+              <p className="text-[10px] text-[#94A3B8] leading-snug">{description}</p>
               {unlocked && unlockedAt && (
-                <p className="text-[9px] text-[#00FF88] mt-1">
+                <p className="text-[9px] text-[#34D399] mt-1">
                   Unlocked {unlockedAt.split("T")[0]}
                 </p>
               )}
               {!unlocked && (
-                <p className="text-[9px] text-[#8888AA]/60 mt-1">Locked</p>
+                <p className="text-[9px] text-[#4B6080] mt-1">Locked</p>
               )}
             </div>
             {/* Arrow */}
-            <div className="w-2 h-2 bg-[#12122A] border-b border-r border-white/[0.08] rotate-45 mx-auto -mt-1" />
+            <div
+              className="w-2 h-2 rotate-45 mx-auto -mt-1"
+              style={{
+                background: "#0F1D30",
+                borderBottom: "1px solid rgba(75, 142, 255, 0.15)",
+                borderRight: "1px solid rgba(75, 142, 255, 0.15)",
+              }}
+            />
           </motion.div>
         )}
       </AnimatePresence>

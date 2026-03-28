@@ -38,17 +38,26 @@ export function FocusOverlay({ taskTitle, taskId }: FocusOverlayProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
           className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-          style={{ backgroundColor: "rgba(10,10,26,0.96)", backdropFilter: "blur(24px)" }}
+          style={{ backgroundColor: "rgba(6, 11, 20, 0.97)", backdropFilter: "blur(24px)" }}
         >
           {/* Exit button */}
           <button
             onClick={deactivate}
-            className="absolute top-6 right-6 flex items-center gap-2 text-[#8888AA] hover:text-[#E8E8F0] transition-colors group"
+            className="absolute top-6 right-6 flex items-center gap-2 transition-colors group"
+            style={{ color: "#94A3B8" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#F1F5F9")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#94A3B8")}
           >
             <span className="text-xs font-mono uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
               Exit Focus Mode
             </span>
-            <div className="w-9 h-9 rounded-lg border border-white/[0.08] bg-white/[0.04] flex items-center justify-center hover:bg-white/[0.08] transition-colors">
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors"
+              style={{
+                border: "1px solid rgba(75, 142, 255, 0.12)",
+                background: "rgba(75, 142, 255, 0.04)",
+              }}
+            >
               <X className="w-4 h-4" />
             </div>
           </button>
@@ -58,9 +67,13 @@ export function FocusOverlay({ taskTitle, taskId }: FocusOverlayProps) {
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mb-6 px-4 py-1.5 rounded-full border border-[#00D4FF]/20 bg-[#00D4FF]/5"
+            className="mb-6 px-4 py-1.5 rounded-full"
+            style={{
+              border: "1px solid rgba(75, 142, 255, 0.2)",
+              background: "rgba(75, 142, 255, 0.05)",
+            }}
           >
-            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#00D4FF]">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#4B8EFF]">
               Focus Mode Active
             </span>
           </motion.div>
@@ -70,7 +83,8 @@ export function FocusOverlay({ taskTitle, taskId }: FocusOverlayProps) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="text-3xl md:text-4xl font-mono font-bold text-center text-[#E8E8F0] max-w-2xl px-6 mb-10 leading-tight"
+            className="text-3xl md:text-4xl font-semibold text-center max-w-2xl px-6 mb-10 leading-tight"
+            style={{ color: "#F1F5F9" }}
           >
             {taskTitle}
           </motion.h1>
@@ -89,7 +103,8 @@ export function FocusOverlay({ taskTitle, taskId }: FocusOverlayProps) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-4 flex items-center gap-2 text-[#FF3366]"
+              className="mt-4 flex items-center gap-2"
+              style={{ color: "#F87171" }}
             >
               <span className="text-sm font-mono">
                 {distractions} distraction{distractions !== 1 ? "s" : ""} logged
@@ -108,7 +123,7 @@ export function FocusOverlay({ taskTitle, taskId }: FocusOverlayProps) {
           </motion.div>
 
           {/* Keyboard hint */}
-          <p className="absolute bottom-6 text-[10px] font-mono text-[#8888AA]/40 tracking-widest">
+          <p className="absolute bottom-6 text-[10px] font-mono text-[#4B6080] tracking-widest">
             Press ESC to exit
           </p>
         </motion.div>

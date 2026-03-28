@@ -4,6 +4,7 @@ import "./globals.css";
 import { TRPCProvider } from "@/lib/trpc/provider";
 import { CommandPalette } from "@/components/command-palette/command-palette";
 import { PWARegister } from "@/components/pwa-register";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrains = JetBrains_Mono({
@@ -36,6 +37,17 @@ export default function RootLayout({
           <PWARegister />
           {children}
           <CommandPalette />
+          <Toaster
+            theme="dark"
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "#0F1D30",
+                border: "1px solid rgba(75, 142, 255, 0.15)",
+                color: "#F1F5F9",
+              },
+            }}
+          />
         </TRPCProvider>
       </body>
     </html>

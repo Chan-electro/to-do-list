@@ -15,11 +15,12 @@ import {
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const PRIORITY_COLORS: Record<string, string> = {
-  P1: "#FF3366",
-  P2: "#FFB800",
-  P3: "#00D4FF",
-  P4: "#8888AA",
+// P1=red, P2=amber, P3=blue, P4=muted — text always #060B14
+const PRIORITY_BG: Record<string, string> = {
+  P1: "#F87171",
+  P2: "#FCD34D",
+  P3: "#4B8EFF",
+  P4: "#94A3B8",
 };
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -83,39 +84,73 @@ export function TaskCalendarView({ search }: TaskCalendarViewProps) {
 
   if (isLoading) {
     return (
-      <div className="glass rounded-xl p-6 animate-pulse h-[520px]" />
+      <div
+        className="glass rounded-2xl p-5 animate-pulse h-[520px]"
+        style={{
+          background: "rgba(11, 21, 36, 0.75)",
+          border: "1px solid rgba(75, 142, 255, 0.12)",
+        }}
+      />
     );
   }
 
   return (
-    <div className="glass rounded-xl overflow-hidden">
+    <div
+      className="glass rounded-2xl overflow-hidden"
+      style={{
+        background: "rgba(11, 21, 36, 0.75)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        border: "1px solid rgba(75, 142, 255, 0.12)",
+      }}
+    >
       {/* Calendar Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
+      <div
+        className="flex items-center justify-between px-5 py-4 border-b"
+        style={{ borderColor: "rgba(75, 142, 255, 0.08)" }}
+      >
         <button
           onClick={prevMonth}
-          className="p-2 rounded-lg text-[#8888AA] hover:text-[#00D4FF] hover:bg-[#00D4FF]/10 transition-colors"
+          className="p-2 rounded-lg transition-colors text-[#94A3B8] hover:text-[#4B8EFF]"
+          style={{ background: "transparent" }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "rgba(75, 142, 255, 0.06)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+          }}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
 
-        <h2 className="text-base font-mono font-semibold text-[#E8E8F0]">
+        <h2 className="text-base font-mono font-semibold text-[#F1F5F9]">
           {format(currentMonth, "MMMM yyyy")}
         </h2>
 
         <button
           onClick={nextMonth}
-          className="p-2 rounded-lg text-[#8888AA] hover:text-[#00D4FF] hover:bg-[#00D4FF]/10 transition-colors"
+          className="p-2 rounded-lg transition-colors text-[#94A3B8] hover:text-[#4B8EFF]"
+          style={{ background: "transparent" }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "rgba(75, 142, 255, 0.06)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+          }}
         >
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
       {/* Day Name Headers */}
-      <div className="grid grid-cols-7 border-b border-white/[0.06]">
+      <div
+        className="grid grid-cols-7 border-b"
+        style={{ borderColor: "rgba(75, 142, 255, 0.08)" }}
+      >
         {DAY_NAMES.map((day) => (
           <div
             key={day}
-            className="py-2 text-center text-[10px] font-mono font-semibold text-[#8888AA] uppercase tracking-wider"
+            className="py-2 text-center text-[10px] font-mono font-semibold text-[#94A3B8] uppercase tracking-wider"
           >
             {day}
           </div>
@@ -128,28 +163,37 @@ export function TaskCalendarView({ search }: TaskCalendarViewProps) {
           const dayTasks = getTasksForDay(day);
           const inMonth = isSameMonth(day, currentMonth);
           const todayFlag = isToday(day);
-          const isLast = idx === days.length - 1;
           const isLastRow = idx >= days.length - 7;
 
           return (
             <div
               key={day.toISOString()}
-              className={`min-h-[90px] p-2 border-r border-b border-white/[0.04] transition-colors ${
-                !isMonth(idx, 6) ? "" : "border-r-0"
-              } ${isLastRow ? "border-b-0" : ""} ${
-                inMonth ? "bg-transparent" : "bg-white/[0.01]"
-              }`}
+              className="min-h-[90px] p-2 border-r border-b transition-colors"
+              style={{
+                borderRightColor: isMonth(idx, 6) ? "transparent" : "rgba(75, 142, 255, 0.05)",
+                borderBottomColor: isLastRow ? "transparent" : "rgba(75, 142, 255, 0.05)",
+                background: inMonth
+                  ? "rgba(75, 142, 255, 0.03)"
+                  : "rgba(75, 142, 255, 0.01)",
+                opacity: inMonth ? 1 : 0.3,
+              }}
             >
               {/* Day Number */}
               <div className="flex items-center justify-end mb-1">
                 <span
-                  className={`text-xs font-mono w-6 h-6 flex items-center justify-center rounded-full transition-colors ${
+                  className="text-xs font-mono w-6 h-6 flex items-center justify-center rounded-full transition-colors"
+                  style={
                     todayFlag
-                      ? "bg-transparent ring-2 ring-[#00D4FF] text-[#00D4FF] font-bold"
-                      : inMonth
-                      ? "text-[#E8E8F0]"
-                      : "text-[#8888AA]/30"
-                  }`}
+                      ? {
+                          border: "1px solid #4B8EFF",
+                          background: "rgba(75, 142, 255, 0.08)",
+                          color: "#4B8EFF",
+                          fontWeight: 700,
+                        }
+                      : {
+                          color: inMonth ? "#F1F5F9" : "#94A3B8",
+                        }
+                  }
                 >
                   {format(day, "d")}
                 </span>
@@ -157,26 +201,29 @@ export function TaskCalendarView({ search }: TaskCalendarViewProps) {
 
               {/* Task Badges */}
               <div className="space-y-0.5">
-                {dayTasks.slice(0, 3).map((task) => (
-                  <button
-                    key={task.id}
-                    onClick={() =>
-                      setSelectedTask(
-                        selectedTask?.id === task.id ? null : task
-                      )
-                    }
-                    className="w-full text-left truncate text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors hover:opacity-80"
-                    style={{
-                      backgroundColor: `${PRIORITY_COLORS[task.priority] ?? "#8888AA"}22`,
-                      color: PRIORITY_COLORS[task.priority] ?? "#8888AA",
-                      borderLeft: `2px solid ${PRIORITY_COLORS[task.priority] ?? "#8888AA"}`,
-                    }}
-                  >
-                    {task.title}
-                  </button>
-                ))}
+                {dayTasks.slice(0, 3).map((task) => {
+                  const bg = PRIORITY_BG[task.priority] ?? "#94A3B8";
+                  return (
+                    <button
+                      key={task.id}
+                      onClick={() =>
+                        setSelectedTask(
+                          selectedTask?.id === task.id ? null : task
+                        )
+                      }
+                      className="w-full text-left truncate text-[10px] font-mono px-1.5 py-0.5 rounded transition-opacity hover:opacity-80"
+                      style={{
+                        backgroundColor: bg,
+                        color: "#060B14",
+                        fontSize: "10px",
+                      }}
+                    >
+                      {task.title}
+                    </button>
+                  );
+                })}
                 {dayTasks.length > 3 && (
-                  <span className="text-[9px] text-[#8888AA]/60 font-mono pl-1">
+                  <span className="text-[9px] text-[#4B6080] font-mono pl-1">
                     +{dayTasks.length - 3} more
                   </span>
                 )}
@@ -188,17 +235,20 @@ export function TaskCalendarView({ search }: TaskCalendarViewProps) {
 
       {/* Selected Task Detail */}
       {selectedTask && (
-        <div className="border-t border-white/[0.06] px-5 py-4 flex items-start justify-between gap-4">
+        <div
+          className="border-t px-5 py-4 flex items-start justify-between gap-4"
+          style={{ borderColor: "rgba(75, 142, 255, 0.08)" }}
+        >
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{
                   backgroundColor:
-                    PRIORITY_COLORS[selectedTask.priority] ?? "#8888AA",
+                    PRIORITY_BG[selectedTask.priority] ?? "#94A3B8",
                 }}
               />
-              <p className="text-sm font-mono text-[#E8E8F0] font-medium">
+              <p className="text-sm font-mono text-[#F1F5F9] font-medium">
                 {selectedTask.title}
               </p>
             </div>
@@ -206,17 +256,20 @@ export function TaskCalendarView({ search }: TaskCalendarViewProps) {
               <span
                 className="text-[10px] font-mono px-2 py-0.5 rounded"
                 style={{
-                  backgroundColor: `${PRIORITY_COLORS[selectedTask.priority] ?? "#8888AA"}20`,
-                  color: PRIORITY_COLORS[selectedTask.priority] ?? "#8888AA",
+                  backgroundColor: `${PRIORITY_BG[selectedTask.priority] ?? "#94A3B8"}20`,
+                  color: PRIORITY_BG[selectedTask.priority] ?? "#94A3B8",
                 }}
               >
                 {selectedTask.priority}
               </span>
-              <span className="text-[10px] font-mono text-[#8888AA] border border-white/[0.06] px-2 py-0.5 rounded">
+              <span
+                className="text-[10px] font-mono px-2 py-0.5 rounded text-[#94A3B8]"
+                style={{ border: "1px solid rgba(75, 142, 255, 0.1)" }}
+              >
                 {selectedTask.status}
               </span>
               {selectedTask.dueDate && (
-                <span className="text-[10px] font-mono text-[#8888AA]">
+                <span className="text-[10px] font-mono text-[#94A3B8]">
                   Due {format(new Date(selectedTask.dueDate), "MMM d, yyyy")}
                 </span>
               )}
@@ -224,7 +277,8 @@ export function TaskCalendarView({ search }: TaskCalendarViewProps) {
           </div>
           <button
             onClick={() => setSelectedTask(null)}
-            className="text-[10px] font-mono text-[#8888AA] hover:text-[#E8E8F0] border border-white/[0.06] px-2 py-1 rounded transition-colors flex-shrink-0"
+            className="text-[10px] font-mono text-[#94A3B8] hover:text-[#F1F5F9] px-2 py-1 rounded transition-colors flex-shrink-0"
+            style={{ border: "1px solid rgba(75, 142, 255, 0.1)" }}
           >
             Dismiss
           </button>

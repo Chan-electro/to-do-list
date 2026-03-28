@@ -129,25 +129,37 @@ export function DataExportPanel() {
   };
 
   return (
-    <div className="rounded-xl border border-amber-500/20 bg-white/[0.03] p-6 space-y-6">
+    <div
+      className="rounded-2xl p-5 space-y-6"
+      style={{
+        border: "1px solid rgba(252, 211, 77, 0.15)",
+        background: "rgba(252, 211, 77, 0.03)",
+      }}
+    >
       {/* Header */}
       <div className="space-y-1">
-        <h2 className="font-mono text-base font-semibold text-amber-400">
+        <h2 className="font-mono text-base font-semibold text-[#FCD34D]">
           Data Export / Import
         </h2>
-        <p className="text-xs text-[#8888AA]">
+        <p className="text-xs text-[#94A3B8]">
           Back up all your Nexus data or restore from a previous export.
         </p>
       </div>
 
       {/* Export */}
-      <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
+      <div
+        className="rounded-lg p-4 space-y-3"
+        style={{
+          background: "rgba(252, 211, 77, 0.02)",
+          border: "1px solid rgba(252, 211, 77, 0.08)",
+        }}
+      >
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-sm font-mono text-[#E8E8F0]">Export All Data</p>
-            <p className="text-xs text-[#8888AA] mt-0.5">
+            <p className="text-sm font-mono text-[#F1F5F9]">Export All Data</p>
+            <p className="text-xs text-[#94A3B8] mt-0.5">
               Last exported:{" "}
-              <span className="text-[#E8E8F0]/60">
+              <span className="text-[#F1F5F9]/60">
                 {formatTimestamp(lastExport)}
               </span>
             </p>
@@ -155,36 +167,51 @@ export function DataExportPanel() {
           <button
             onClick={handleExport}
             disabled={isExporting}
-            className={[
-              "shrink-0 px-4 py-2 rounded-lg text-sm font-mono font-medium",
-              "border border-amber-500/30 bg-amber-500/10 text-amber-300",
-              "hover:bg-amber-500/20 transition-colors",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-            ].join(" ")}
+            className="shrink-0 px-4 py-2 rounded-lg text-sm font-mono font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              border: "1px solid rgba(252, 211, 77, 0.25)",
+              color: "#FCD34D",
+              background: "transparent",
+            }}
+            onMouseEnter={(e) => {
+              if (!isExporting) {
+                (e.currentTarget as HTMLButtonElement).style.background = "rgba(252, 211, 77, 0.08)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+            }}
           >
             {isExporting ? "Exporting…" : "Export JSON"}
           </button>
         </div>
-        <p className="text-xs text-[#8888AA]/70">
+        <p className="text-xs text-[#94A3B8]/70">
           Downloads a single JSON file containing tasks, habits, notes, and
           time sessions.
         </p>
       </div>
 
       {/* Import */}
-      <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-4 space-y-3">
-        <p className="text-sm font-mono text-[#E8E8F0]">Import from JSON</p>
-        <p className="text-xs text-[#8888AA]">
+      <div
+        className="rounded-lg p-4 space-y-3"
+        style={{
+          background: "rgba(75, 142, 255, 0.02)",
+          border: "1px solid rgba(75, 142, 255, 0.08)",
+        }}
+      >
+        <p className="text-sm font-mono text-[#F1F5F9]">Import from JSON</p>
+        <p className="text-xs text-[#94A3B8]">
           Select a Nexus backup file. You will see a preview before confirming.
         </p>
 
         <label className="inline-flex items-center gap-2 cursor-pointer">
           <span
-            className={[
-              "px-4 py-2 rounded-lg text-sm font-mono font-medium",
-              "border border-white/[0.10] bg-white/[0.04] text-[#E8E8F0]",
-              "hover:bg-white/[0.08] transition-colors",
-            ].join(" ")}
+            className="px-4 py-2 rounded-lg text-sm font-mono font-medium transition-colors"
+            style={{
+              border: "1px solid rgba(75, 142, 255, 0.2)",
+              color: "#4B8EFF",
+              background: "transparent",
+            }}
           >
             Choose File
           </span>
@@ -199,11 +226,17 @@ export function DataExportPanel() {
 
         {/* Confirmation dialog */}
         {importPreview && !importConfirmed && (
-          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 space-y-2">
-            <p className="text-xs font-mono text-amber-400 font-semibold">
+          <div
+            className="rounded-lg p-3 space-y-2"
+            style={{
+              border: "1px solid rgba(252, 211, 77, 0.2)",
+              background: "rgba(252, 211, 77, 0.04)",
+            }}
+          >
+            <p className="text-xs font-mono text-[#FCD34D] font-semibold">
               Preview — confirm to proceed
             </p>
-            <ul className="text-xs text-[#E8E8F0]/70 space-y-0.5 font-mono">
+            <ul className="text-xs text-[#F1F5F9]/70 space-y-0.5 font-mono">
               <li>{importPreview.tasks} tasks</li>
               <li>{importPreview.habits} habits</li>
               <li>{importPreview.notes} notes</li>
@@ -213,14 +246,14 @@ export function DataExportPanel() {
             {importPreview.errors.length > 0 && (
               <div className="mt-2 space-y-0.5">
                 {importPreview.errors.map((err, i) => (
-                  <p key={i} className="text-xs text-red-400 font-mono">
+                  <p key={i} className="text-xs text-[#F87171] font-mono">
                     {err}
                   </p>
                 ))}
               </div>
             )}
 
-            <p className="text-xs text-amber-300/60">
+            <p className="text-xs text-[#FCD34D]/60">
               Make sure you have a current export before importing — this
               cannot be undone.
             </p>
@@ -228,13 +261,18 @@ export function DataExportPanel() {
             <div className="flex gap-2 pt-1">
               <button
                 onClick={handleConfirmImport}
-                className="px-3 py-1.5 rounded text-xs font-mono font-semibold bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:bg-amber-500/30 transition-colors"
+                className="px-3 py-1.5 rounded text-xs font-mono font-semibold transition-colors"
+                style={{
+                  background: "rgba(252, 211, 77, 0.12)",
+                  border: "1px solid rgba(252, 211, 77, 0.25)",
+                  color: "#FCD34D",
+                }}
               >
                 Confirm Import
               </button>
               <button
                 onClick={handleCancelImport}
-                className="px-3 py-1.5 rounded text-xs font-mono text-[#8888AA] hover:text-[#E8E8F0] transition-colors"
+                className="px-3 py-1.5 rounded text-xs font-mono text-[#94A3B8] hover:text-[#F1F5F9] transition-colors"
               >
                 Cancel
               </button>
@@ -244,10 +282,10 @@ export function DataExportPanel() {
 
         {/* Status messages */}
         {importStatus === "success" && importMessage && (
-          <p className="text-xs font-mono text-emerald-400">{importMessage}</p>
+          <p className="text-xs font-mono text-[#34D399]">{importMessage}</p>
         )}
         {importStatus === "error" && importMessage && (
-          <p className="text-xs font-mono text-red-400">{importMessage}</p>
+          <p className="text-xs font-mono text-[#F87171]">{importMessage}</p>
         )}
       </div>
     </div>

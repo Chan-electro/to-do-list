@@ -4,17 +4,18 @@ import { trpc } from "@/lib/trpc/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Circle, Clock, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const PRIORITY_COLORS: Record<string, string> = {
-  P1: "#FF3366",
-  P2: "#FFB800",
-  P3: "#00D4FF",
-  P4: "#8888AA",
+  P1: "#F87171",
+  P2: "#FCD34D",
+  P3: "#4B8EFF",
+  P4: "#4B6080",
 };
 
 const DOMAIN_COLORS: Record<string, string> = {
-  personal: "#00FF88",
-  professional: "#00D4FF",
+  personal: "#34D399",
+  professional: "#4B8EFF",
 };
 
 export function TodayAgenda() {
@@ -47,100 +48,141 @@ export function TodayAgenda() {
     .slice(0, 10);
 
   return (
-    <div className="glass rounded-xl p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-mono font-semibold text-[#E8E8F0]">
+    <div className="glass rounded-2xl overflow-hidden">
+      <div
+        className="flex items-center justify-between px-5 py-4"
+        style={{ borderBottom: "1px solid rgba(75, 142, 255, 0.06)" }}
+      >
+        <h2 className="text-lg font-mono font-semibold text-[#F1F5F9]">
           Today&apos;s Agenda
         </h2>
-        <span className="text-xs font-mono text-[#8888AA]">
-          {todayTasks.length} tasks
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-mono text-[#94A3B8]">
+            {todayTasks.length} tasks
+          </span>
+          <Link
+            href="/tasks"
+            className="text-xs font-medium transition-colors duration-200"
+            style={{ color: "#4B8EFF" }}
+          >
+            View all
+          </Link>
+        </div>
       </div>
 
-      {isLoading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-14 rounded-lg bg-white/[0.03] animate-pulse"
-            />
-          ))}
-        </div>
-      ) : todayTasks.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-[#8888AA] text-sm">All clear! No tasks pending.</p>
-          <p className="text-[#8888AA]/60 text-xs mt-1">
-            Press Ctrl+K to add a new task
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <AnimatePresence>
-            {todayTasks.map((task, index) => (
-              <motion.div
-                key={task.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ delay: index * 0.05 }}
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-colors group cursor-pointer"
-              >
-                <button
-                  onClick={() => handleToggleDone(task.id, task.status)}
-                  className="flex-shrink-0"
-                >
-                  {task.status === "done" ? (
-                    <CheckCircle2 className="w-5 h-5 text-[#00FF88]" />
-                  ) : (
-                    <Circle className="w-5 h-5 text-[#8888AA] group-hover:text-[#00D4FF] transition-colors" />
-                  )}
-                </button>
-
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-[#E8E8F0] truncate">
-                    {task.title}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    {task.dueDate && (
-                      <span className="flex items-center gap-1 text-xs text-[#8888AA]">
-                        <Clock className="w-3 h-3" />
-                        {task.dueDate.split("T")[0]}
-                      </span>
-                    )}
-                    {task.assignee && task.assignee !== "Self" && (
-                      <span className="flex items-center gap-1 text-xs text-[#8888AA]">
-                        <User className="w-3 h-3" />
-                        {task.assignee}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <Badge
-                    className="text-[10px] font-mono border-0"
-                    style={{
-                      backgroundColor: `${PRIORITY_COLORS[task.priority] ?? "#8888AA"}20`,
-                      color: PRIORITY_COLORS[task.priority] ?? "#8888AA",
-                    }}
-                  >
-                    {task.priority}
-                  </Badge>
-                  <Badge
-                    className="text-[10px] border-0 hidden sm:inline-flex"
-                    style={{
-                      backgroundColor: `${DOMAIN_COLORS[task.domain] ?? "#00D4FF"}15`,
-                      color: DOMAIN_COLORS[task.domain] ?? "#00D4FF",
-                    }}
-                  >
-                    {task.domain}
-                  </Badge>
-                </div>
-              </motion.div>
+      <div className="px-5 py-3">
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-14 rounded-lg animate-pulse"
+                style={{ background: "rgba(75, 142, 255, 0.04)" }}
+              />
             ))}
-          </AnimatePresence>
-        </div>
-      )}
+          </div>
+        ) : todayTasks.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-[#94A3B8] text-sm">All clear! No tasks pending.</p>
+            <p className="text-[#4B6080] text-xs mt-1">
+              Press Ctrl+K to add a new task
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            <AnimatePresence>
+              {todayTasks.map((task, index) => (
+                <motion.div
+                  key={task.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors duration-200 group cursor-pointer"
+                  style={{
+                    borderBottom: "1px solid rgba(75, 142, 255, 0.06)",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.background =
+                      "rgba(75, 142, 255, 0.04)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.background =
+                      "transparent";
+                  }}
+                >
+                  <button
+                    onClick={() => handleToggleDone(task.id, task.status)}
+                    className="flex-shrink-0 transition-colors duration-200"
+                  >
+                    {task.status === "done" ? (
+                      <CheckCircle2 className="w-5 h-5" style={{ color: "#34D399" }} />
+                    ) : (
+                      <Circle
+                        className="w-5 h-5 transition-colors duration-200"
+                        style={{ color: "#94A3B8" }}
+                        onMouseEnter={(e) => {
+                          (e.currentTarget as SVGElement).style.color = "#4B8EFF";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as SVGElement).style.color = "#94A3B8";
+                        }}
+                      />
+                    )}
+                  </button>
+
+                  {/* Priority dot */}
+                  <div
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: PRIORITY_COLORS[task.priority] ?? "#4B6080" }}
+                  />
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-[#F1F5F9] truncate">
+                      {task.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      {task.dueDate && (
+                        <span className="flex items-center gap-1 text-xs text-[#94A3B8]">
+                          <Clock className="w-3 h-3" />
+                          {task.dueDate.split("T")[0]}
+                        </span>
+                      )}
+                      {task.assignee && task.assignee !== "Self" && (
+                        <span className="flex items-center gap-1 text-xs text-[#94A3B8]">
+                          <User className="w-3 h-3" />
+                          {task.assignee}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Badge
+                      className="text-[10px] font-mono border-0"
+                      style={{
+                        backgroundColor: `${PRIORITY_COLORS[task.priority] ?? "#4B6080"}20`,
+                        color: PRIORITY_COLORS[task.priority] ?? "#4B6080",
+                      }}
+                    >
+                      {task.priority}
+                    </Badge>
+                    <Badge
+                      className="text-[10px] border-0 hidden sm:inline-flex"
+                      style={{
+                        backgroundColor: `${DOMAIN_COLORS[task.domain] ?? "#4B8EFF"}18`,
+                        color: DOMAIN_COLORS[task.domain] ?? "#4B8EFF",
+                      }}
+                    >
+                      {task.domain}
+                    </Badge>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

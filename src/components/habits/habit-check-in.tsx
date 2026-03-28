@@ -69,8 +69,8 @@ export function HabitCheckIn() {
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="h-28 rounded-xl animate-pulse"
-            style={{ background: "rgba(26,26,62,0.6)" }}
+            className="h-28 rounded-2xl animate-pulse"
+            style={{ background: "#0F1D30" }}
           />
         ))}
       </div>
@@ -80,15 +80,15 @@ export function HabitCheckIn() {
   if (!habits || habits.length === 0) {
     return (
       <div
-        className="rounded-xl p-12 flex flex-col items-center justify-center text-center"
+        className="rounded-2xl p-12 flex flex-col items-center justify-center text-center"
         style={{
-          background: "rgba(26,26,62,0.6)",
+          background: "rgba(11,21,36,0.75)",
           backdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          border: "1px solid rgba(75,142,255,0.1)",
         }}
       >
-        <Flame className="w-10 h-10 mb-3" style={{ color: "rgba(255,184,0,0.3)" }} />
-        <p className="font-mono text-base" style={{ color: "#8888AA" }}>
+        <Flame className="w-10 h-10 mb-3" style={{ color: "rgba(75,142,255,0.3)" }} />
+        <p className="font-mono text-base text-[#94A3B8]">
           No habits yet. Add your first habit!
         </p>
       </div>
@@ -100,8 +100,8 @@ export function HabitCheckIn() {
       {habits.map((habit) => {
         const done = habit.completedToday;
         const isAnimating = animating.has(habit.id);
-        const habitColor = habit.color ?? "#00D4FF";
         const streak = habit.streakCurrent ?? 0;
+        const streakColor = streak >= 7 ? "#34D399" : "#FCD34D";
 
         return (
           <motion.button
@@ -113,19 +113,15 @@ export function HabitCheckIn() {
                 : { scale: 1 }
             }
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="relative rounded-xl p-4 text-left cursor-pointer select-none transition-all duration-200 focus:outline-none focus-visible:ring-2"
+            className="relative rounded-2xl p-4 text-left cursor-pointer select-none transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4B8EFF]"
             style={{
               background: done
-                ? `rgba(0, 255, 136, 0.08)`
-                : "rgba(26,26,62,0.6)",
-              backdropFilter: "blur(24px)",
+                ? "rgba(52,211,153,0.05)"
+                : "#0F1D30",
               border: done
-                ? "1px solid rgba(0,255,136,0.25)"
-                : "1px solid rgba(255,255,255,0.06)",
-              boxShadow: done
-                ? "0 0 18px rgba(0,255,136,0.12)"
-                : "none",
-              opacity: done ? 1 : 0.72,
+                ? "1px solid rgba(52,211,153,0.3)"
+                : "1px solid rgba(75,142,255,0.1)",
+              transform: done ? "translateY(-1px)" : undefined,
             }}
           >
             {/* Done checkmark badge */}
@@ -137,9 +133,9 @@ export function HabitCheckIn() {
                   exit={{ scale: 0, opacity: 0 }}
                   transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   className="absolute top-2 right-2 rounded-full flex items-center justify-center w-5 h-5"
-                  style={{ background: "#00FF88" }}
+                  style={{ background: "#34D399" }}
                 >
-                  <Check className="w-3 h-3" style={{ color: "#0A0A1A" }} />
+                  <Check className="w-3 h-3" style={{ color: "#060B14" }} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -148,18 +144,15 @@ export function HabitCheckIn() {
             <div
               className="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
               style={{
-                background: `${habitColor}18`,
-                color: done ? "#00FF88" : habitColor,
+                background: "rgba(75,142,255,0.1)",
+                color: done ? "#34D399" : "#4B8EFF",
               }}
             >
               {getIconNode(habit.icon)}
             </div>
 
             {/* Name */}
-            <p
-              className="font-mono text-sm font-medium leading-tight mb-2 pr-5"
-              style={{ color: done ? "#E8E8F0" : "#C8C8D8" }}
-            >
+            <p className="font-mono text-sm font-medium leading-tight mb-2 pr-5 text-[#F1F5F9]">
               {habit.name}
             </p>
 
@@ -168,11 +161,11 @@ export function HabitCheckIn() {
               <div className="flex items-center gap-1">
                 <Flame
                   className="w-3.5 h-3.5"
-                  style={{ color: streak >= 7 ? "#00FF88" : "#FFB800" }}
+                  style={{ color: streakColor }}
                 />
                 <span
-                  className="font-mono text-xs"
-                  style={{ color: streak >= 7 ? "#00FF88" : "#FFB800" }}
+                  className="font-mono text-xs font-semibold"
+                  style={{ color: streakColor }}
                 >
                   {streak}
                 </span>

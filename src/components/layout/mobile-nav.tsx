@@ -17,11 +17,12 @@ export function MobileNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-stretch border-t border-white/10"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-stretch backdrop-blur-xl"
       style={{
-        background: "rgba(18, 18, 42, 0.90)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
+        background: "rgba(8, 14, 26, 0.92)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(75, 142, 255, 0.1)",
         height: "64px",
       }}
     >
@@ -34,7 +35,7 @@ export function MobileNav() {
             href={href}
             className="flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200"
             style={{
-              color: isActive ? "#00D4FF" : "rgba(255,255,255,0.45)",
+              color: isActive ? "#4B8EFF" : "rgba(255,255,255,0.35)",
             }}
           >
             <Icon
@@ -42,8 +43,8 @@ export function MobileNav() {
               style={
                 isActive
                   ? {
-                      color: "#00D4FF",
-                      filter: "drop-shadow(0 0 6px rgba(0, 212, 255, 0.7))",
+                      color: "#4B8EFF",
+                      filter: "drop-shadow(0 0 6px rgba(75, 142, 255, 0.6))",
                     }
                   : {}
               }
@@ -53,8 +54,8 @@ export function MobileNav() {
               style={
                 isActive
                   ? {
-                      color: "#00D4FF",
-                      textShadow: "0 0 6px rgba(0, 212, 255, 0.6)",
+                      color: "#4B8EFF",
+                      textShadow: "0 0 6px rgba(75, 142, 255, 0.4)",
                     }
                   : {}
               }
@@ -67,8 +68,8 @@ export function MobileNav() {
               <span
                 className="absolute bottom-1 w-1 h-1 rounded-full"
                 style={{
-                  background: "#00D4FF",
-                  boxShadow: "0 0 6px rgba(0, 212, 255, 0.9)",
+                  background: "#4B8EFF",
+                  boxShadow: "0 0 6px rgba(75, 142, 255, 0.8)",
                 }}
               />
             )}

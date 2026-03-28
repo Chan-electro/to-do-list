@@ -19,14 +19,16 @@ function Toggle({
   label: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-white/[0.04]">
-      <span className="text-sm text-[#E8E8F0]">{label}</span>
+    <div
+      className="flex items-center justify-between py-3 border-b"
+      style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+    >
+      <span className="text-sm text-[#94A3B8]">{label}</span>
       <button
         onClick={onToggle}
         aria-pressed={checked}
-        className={`relative w-11 h-6 rounded-full transition-colors ${
-          checked ? "bg-[#00D4FF]" : "bg-white/[0.1]"
-        }`}
+        className="relative w-11 h-6 rounded-full transition-colors"
+        style={{ background: checked ? "#4B8EFF" : "rgba(75, 142, 255, 0.1)" }}
       >
         <span
           className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
@@ -47,17 +49,15 @@ function SectionCard({
 }) {
   return (
     <div
-      className="rounded-xl p-6 space-y-1"
+      className="glass rounded-2xl p-6 space-y-1"
       style={{
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.06)",
-        backdropFilter: "blur(12px)",
+        background: "rgba(11, 21, 36, 0.75)",
+        border: "1px solid rgba(75, 142, 255, 0.12)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
       }}
     >
-      <h2
-        className="text-xs font-mono uppercase tracking-[0.18em] mb-4"
-        style={{ color: "#00D4FF" }}
-      >
+      <h2 className="text-lg font-semibold text-[#F1F5F9] mb-4">
         {title}
       </h2>
       {children}
@@ -81,8 +81,11 @@ function NumericInput({
   unit?: string;
 }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-white/[0.04]">
-      <span className="text-sm text-[#E8E8F0]">{label}</span>
+    <div
+      className="flex items-center justify-between py-3 border-b"
+      style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+    >
+      <span className="text-sm text-[#94A3B8]">{label}</span>
       <div className="flex items-center gap-2">
         <input
           type="number"
@@ -93,15 +96,21 @@ function NumericInput({
             const v = Number(e.target.value);
             if (!isNaN(v) && v >= min && v <= max) onChange(v);
           }}
-          className="w-16 text-center text-sm font-mono rounded-lg px-2 py-1 outline-none focus:ring-1 focus:ring-[#00D4FF]/50"
+          className="w-16 text-center text-sm font-mono rounded-lg px-2 py-1 outline-none transition-colors"
           style={{
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            color: "#E8E8F0",
+            background: "rgba(75, 142, 255, 0.05)",
+            border: "1px solid rgba(75, 142, 255, 0.15)",
+            color: "#F1F5F9",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = "#4B8EFF";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "rgba(75, 142, 255, 0.15)";
           }}
         />
         {unit && (
-          <span className="text-xs text-[#8888AA] w-8">{unit}</span>
+          <span className="text-xs text-[#94A3B8] w-8">{unit}</span>
         )}
       </div>
     </div>
@@ -144,12 +153,10 @@ export default function SettingsPage() {
       <div className="space-y-6 max-w-2xl">
         {/* Header */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#8888AA] to-[#E8E8F0] bg-clip-text text-transparent">
-              Settings
-            </span>
+          <h1 className="text-2xl md:text-3xl font-mono font-bold text-[#F1F5F9]">
+            Settings
           </h1>
-          <p className="text-sm text-[#8888AA] mt-1">Configure your command center</p>
+          <p className="text-sm text-[#94A3B8] mt-1">Configure your command center</p>
         </div>
 
         {/* 1. Timer Settings */}
@@ -219,17 +226,23 @@ export default function SettingsPage() {
             <div className="grid grid-cols-2 gap-3 text-xs font-mono">
               <div
                 className="rounded-lg p-3"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                style={{
+                  background: "rgba(75, 142, 255, 0.03)",
+                  border: "1px solid rgba(75, 142, 255, 0.1)",
+                }}
               >
-                <span className="text-[#8888AA]">Database</span>
-                <p className="text-[#E8E8F0] mt-1">SQLite (Local)</p>
+                <span className="text-[#94A3B8]">Database</span>
+                <p className="text-[#F1F5F9] mt-1">SQLite (Local)</p>
               </div>
               <div
                 className="rounded-lg p-3"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+                style={{
+                  background: "rgba(75, 142, 255, 0.03)",
+                  border: "1px solid rgba(75, 142, 255, 0.1)",
+                }}
               >
-                <span className="text-[#8888AA]">Backup</span>
-                <p className="text-[#E8E8F0] mt-1">Nightly cron</p>
+                <span className="text-[#94A3B8]">Backup</span>
+                <p className="text-[#F1F5F9] mt-1">Nightly cron</p>
               </div>
             </div>
             <DataExportPanel />
@@ -237,8 +250,7 @@ export default function SettingsPage() {
               href="/api/backup"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-mono transition-colors"
-              style={{ color: "#7B2FFF" }}
+              className="inline-flex items-center gap-1.5 text-xs font-mono transition-colors text-[#4B8EFF] hover:text-[#93C5FD]"
             >
               /api/backup endpoint
               <span className="opacity-60">→</span>
@@ -250,33 +262,40 @@ export default function SettingsPage() {
         <SectionCard title="About">
           <div className="py-2 space-y-3 text-sm font-mono">
             <div className="flex items-baseline justify-between">
-              <span className="text-[#8888AA]">Application</span>
-              <span className="text-[#E8E8F0]">Nexus Command Center</span>
+              <span className="text-[#94A3B8]">Application</span>
+              <span className="text-[#4B6080]">Nexus Command Center</span>
             </div>
-            <div className="flex items-baseline justify-between border-b border-white/[0.04] pb-3">
-              <span className="text-[#8888AA]">Version</span>
-              <span
-                className="text-[#00FF88]"
-                style={{ textShadow: "0 0 8px rgba(0,255,136,0.5)" }}
-              >
-                1.0.0
-              </span>
+            <div
+              className="flex items-baseline justify-between border-b pb-3"
+              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+            >
+              <span className="text-[#94A3B8]">Version</span>
+              <span className="text-[#4B6080]">1.0.0</span>
             </div>
-            <div className="flex items-baseline justify-between border-b border-white/[0.04] pb-3">
-              <span className="text-[#8888AA]">Built for</span>
-              <span className="text-[#E8E8F0]">Chandan B Krishna</span>
+            <div
+              className="flex items-baseline justify-between border-b pb-3"
+              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+            >
+              <span className="text-[#94A3B8]">Built for</span>
+              <span className="text-[#4B6080]">Chandan B Krishna</span>
             </div>
-            <div className="flex items-baseline justify-between border-b border-white/[0.04] pb-3">
-              <span className="text-[#8888AA]">Framework</span>
-              <span className="text-[#E8E8F0]">Next.js + tRPC</span>
+            <div
+              className="flex items-baseline justify-between border-b pb-3"
+              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+            >
+              <span className="text-[#94A3B8]">Framework</span>
+              <span className="text-[#4B6080]">Next.js + tRPC</span>
             </div>
-            <div className="flex items-baseline justify-between border-b border-white/[0.04] pb-3">
-              <span className="text-[#8888AA]">State</span>
-              <span className="text-[#E8E8F0]">Zustand + React Query</span>
+            <div
+              className="flex items-baseline justify-between border-b pb-3"
+              style={{ borderColor: "rgba(75, 142, 255, 0.06)" }}
+            >
+              <span className="text-[#94A3B8]">State</span>
+              <span className="text-[#4B6080]">Zustand + React Query</span>
             </div>
             <div className="flex items-baseline justify-between">
-              <span className="text-[#8888AA]">Database</span>
-              <span className="text-[#E8E8F0]">Drizzle ORM + SQLite</span>
+              <span className="text-[#94A3B8]">Database</span>
+              <span className="text-[#4B6080]">Drizzle ORM + SQLite</span>
             </div>
           </div>
         </SectionCard>

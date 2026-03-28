@@ -9,7 +9,7 @@ const stats = [
     key: "tasksCompleted",
     label: "Tasks Done",
     icon: CheckCircle2,
-    color: "#00FF88",
+    color: "#34D399",
     getValue: (data: DashboardData | undefined) =>
       String(data?.tasks.completedToday ?? 0),
   },
@@ -17,7 +17,7 @@ const stats = [
     key: "focusTime",
     label: "Focus Time",
     icon: Clock,
-    color: "#00D4FF",
+    color: "#4B8EFF",
     getValue: (data: DashboardData | undefined) => {
       const mins = data?.timer.focusMinutesToday ?? 0;
       const h = Math.floor(mins / 60);
@@ -29,7 +29,7 @@ const stats = [
     key: "habitsCompleted",
     label: "Habits",
     icon: Flame,
-    color: "#FFB800",
+    color: "#FCD34D",
     getValue: (data: DashboardData | undefined) =>
       `${data?.habits.completed ?? 0}/${data?.habits.total ?? 0}`,
   },
@@ -37,7 +37,7 @@ const stats = [
     key: "streak",
     label: "Best Streak",
     icon: Zap,
-    color: "#7B2FFF",
+    color: "#8B5CF6",
     getValue: (data: DashboardData | undefined) =>
       `${data?.habits.bestStreak?.streak ?? 0}d`,
   },
@@ -57,35 +57,36 @@ export function QuickStats() {
   const { data, isLoading } = trpc.dashboard.getSummary.useQuery();
 
   return (
-    <div className="grid grid-cols-2 gap-3">
-      {stats.map((stat, index) => {
-        const Icon = stat.icon;
-        return (
-          <motion.div
-            key={stat.key}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-            className="glass rounded-xl p-4 flex flex-col items-center text-center"
-          >
-            <Icon
-              className="w-5 h-5 mb-2"
-              style={{ color: stat.color }}
-            />
-            {isLoading ? (
-              <div className="h-8 w-12 rounded bg-white/[0.05] animate-pulse" />
-            ) : (
-              <span
-                className="text-2xl font-mono font-bold"
+    <div className="glass rounded-2xl p-5">
+      <div className="grid grid-cols-2 gap-3">
+        {stats.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={stat.key}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              className="flex flex-col items-center text-center rounded-lg p-3 hover:bg-[rgba(75,142,255,0.04)] transition-colors duration-200"
+            >
+              <Icon
+                className="w-5 h-5 mb-2"
                 style={{ color: stat.color }}
-              >
-                {stat.getValue(data as DashboardData | undefined)}
-              </span>
-            )}
-            <span className="text-xs text-[#8888AA] mt-1">{stat.label}</span>
-          </motion.div>
-        );
-      })}
+              />
+              {isLoading ? (
+                <div className="h-8 w-12 rounded bg-white/[0.05] animate-pulse" />
+              ) : (
+                <span
+                  className="text-2xl font-mono font-bold text-[#F1F5F9]"
+                >
+                  {stat.getValue(data as DashboardData | undefined)}
+                </span>
+              )}
+              <span className="text-xs text-[#94A3B8] mt-1">{stat.label}</span>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }

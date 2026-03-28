@@ -45,17 +45,23 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
 
-  /* Nexus Custom Colors */
-  --color-nexus-cyan: #00D4FF;
-  --color-nexus-violet: #7B2FFF;
-  --color-nexus-green: #00FF88;
-  --color-nexus-amber: #FFB800;
-  --color-nexus-red: #FF3366;
-  --color-nexus-bg: #0A0A1A;
-  --color-nexus-panel: #12122A;
-  --color-nexus-card: rgba(26, 26, 62, 0.6);
-  --color-nexus-text: #E8E8F0;
-  --color-nexus-muted: #8888AA;
+  /* ── Nexus Soft Mood Design Tokens ── */
+  --color-n-bg:       #060B14;
+  --color-n-surface:  #0B1524;
+  --color-n-card:     #0F1D30;
+  --color-n-hover:    #132438;
+  --color-n-blue:     #4B8EFF;
+  --color-n-blue-lt:  #93C5FD;
+  --color-n-purple:   #8B5CF6;
+  --color-n-green:    #34D399;
+  --color-n-amber:    #FCD34D;
+  --color-n-red:      #F87171;
+  --color-n-text:     #F1F5F9;
+  --color-n-sub:      #94A3B8;
+  --color-n-muted:    #4B6080;
+  --color-n-border:   rgba(75, 142, 255, 0.12);
+  --color-n-border-h: rgba(75, 142, 255, 0.25);
+  --color-n-glow:     rgba(75, 142, 255, 0.18);
 }
 
 :root {
@@ -64,37 +70,37 @@
 
 /* Dark theme is default for Nexus */
 .dark, :root {
-  --background: #0A0A1A;
-  --foreground: #E8E8F0;
-  --card: #12122A;
-  --card-foreground: #E8E8F0;
-  --popover: #12122A;
-  --popover-foreground: #E8E8F0;
-  --primary: #00D4FF;
-  --primary-foreground: #0A0A1A;
-  --secondary: #1A1A3E;
-  --secondary-foreground: #E8E8F0;
-  --muted: #1A1A3E;
-  --muted-foreground: #8888AA;
-  --accent: #7B2FFF;
-  --accent-foreground: #E8E8F0;
-  --destructive: #FF3366;
-  --border: rgba(255, 255, 255, 0.06);
-  --input: rgba(255, 255, 255, 0.1);
-  --ring: #00D4FF;
-  --chart-1: #00D4FF;
-  --chart-2: #7B2FFF;
-  --chart-3: #00FF88;
-  --chart-4: #FFB800;
-  --chart-5: #FF3366;
-  --sidebar: #0D0D22;
-  --sidebar-foreground: #E8E8F0;
-  --sidebar-primary: #00D4FF;
-  --sidebar-primary-foreground: #0A0A1A;
-  --sidebar-accent: #1A1A3E;
-  --sidebar-accent-foreground: #E8E8F0;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: #00D4FF;
+  --background: #060B14;
+  --foreground: #F1F5F9;
+  --card: #0B1524;
+  --card-foreground: #F1F5F9;
+  --popover: #0F1D30;
+  --popover-foreground: #F1F5F9;
+  --primary: #4B8EFF;
+  --primary-foreground: #060B14;
+  --secondary: #0F1D30;
+  --secondary-foreground: #F1F5F9;
+  --muted: #0F1D30;
+  --muted-foreground: #94A3B8;
+  --accent: #8B5CF6;
+  --accent-foreground: #F1F5F9;
+  --destructive: #F87171;
+  --border: rgba(75, 142, 255, 0.12);
+  --input: rgba(75, 142, 255, 0.08);
+  --ring: #4B8EFF;
+  --chart-1: #4B8EFF;
+  --chart-2: #8B5CF6;
+  --chart-3: #34D399;
+  --chart-4: #FCD34D;
+  --chart-5: #F87171;
+  --sidebar: #080E1A;
+  --sidebar-foreground: #F1F5F9;
+  --sidebar-primary: #4B8EFF;
+  --sidebar-primary-foreground: #060B14;
+  --sidebar-accent: #0F1D30;
+  --sidebar-accent-foreground: #F1F5F9;
+  --sidebar-border: rgba(75, 142, 255, 0.1);
+  --sidebar-ring: #4B8EFF;
 }
 
 @layer base {
@@ -103,70 +109,135 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   html {
     @apply font-sans;
   }
 }
 
-/* Glassmorphism utility */
+/* ── Glass Card ── */
 .glass {
-  background: rgba(26, 26, 62, 0.6);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(11, 21, 36, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(75, 142, 255, 0.12);
 }
 
-/* Glow effects */
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 60px rgba(0, 212, 255, 0.05);
+.glass-hover {
+  background: rgba(11, 21, 36, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(75, 142, 255, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.glass-hover:hover {
+  border-color: rgba(75, 142, 255, 0.28);
+  box-shadow: 0 8px 32px rgba(75, 142, 255, 0.08), 0 0 0 1px rgba(75, 142, 255, 0.06);
+  transform: translateY(-1px);
 }
 
-.glow-violet {
-  box-shadow: 0 0 20px rgba(123, 47, 255, 0.15), 0 0 60px rgba(123, 47, 255, 0.05);
+/* ── Soft Glow Utilities ── */
+.glow-blue {
+  box-shadow: 0 0 24px rgba(75, 142, 255, 0.16), 0 0 60px rgba(75, 142, 255, 0.04);
 }
-
+.glow-purple {
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.14), 0 0 60px rgba(139, 92, 246, 0.04);
+}
 .glow-green {
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.15), 0 0 60px rgba(0, 255, 136, 0.05);
+  box-shadow: 0 0 24px rgba(52, 211, 153, 0.14), 0 0 60px rgba(52, 211, 153, 0.04);
 }
 
-/* Animated gradient for headers */
+/* Keep legacy names for backward compat */
+.glow-cyan { box-shadow: 0 0 24px rgba(75, 142, 255, 0.16), 0 0 60px rgba(75, 142, 255, 0.04); }
+.glow-violet { box-shadow: 0 0 24px rgba(139, 92, 246, 0.14), 0 0 60px rgba(139, 92, 246, 0.04); }
+
+/* ── Gradient Header (animated) ── */
 .gradient-header {
-  background: linear-gradient(135deg, #00D4FF 0%, #7B2FFF 50%, #00D4FF 100%);
+  background: linear-gradient(135deg, #4B8EFF 0%, #8B5CF6 50%, #4B8EFF 100%);
   background-size: 200% 200%;
-  animation: gradient-shift 6s ease infinite;
+  animation: gradient-shift 8s ease infinite;
 }
 
 @keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* Data pulse animation */
+/* ── Pulse ── */
 @keyframes pulse-glow {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.02); }
+  50%       { opacity: 0.8; transform: scale(1.02); }
+}
+.data-pulse { animation: pulse-glow 2s ease-in-out; }
+
+/* ── Interactive Button feel (Emil Kowalski-style) ── */
+.btn-press {
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.96);
+  opacity: 0.85;
 }
 
-.data-pulse {
-  animation: pulse-glow 2s ease-in-out;
+/* ── Smooth card lift on hover ── */
+.card-lift {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.18s ease,
+              border-color 0.18s ease;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(75, 142, 255, 0.1);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(75, 142, 255, 0.18);
   border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(75, 142, 255, 0.35);
+}
+
+/* ── Focus rings ── */
+:focus-visible {
+  outline: 2px solid rgba(75, 142, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(75, 142, 255, 0.3);
+  color: #F1F5F9;
+}
+
+/* ── Page fade-in ── */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: page-in 0.25s ease-out forwards;
+}
+
+/* ── Skeleton shimmer ── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(75, 142, 255, 0.04) 25%,
+    rgba(75, 142, 255, 0.09) 50%,
+    rgba(75, 142, 255, 0.04) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
 }

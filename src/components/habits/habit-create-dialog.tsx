@@ -25,11 +25,11 @@ interface HabitCreateDialogProps {
 }
 
 const COLOR_SWATCHES = [
-  { label: "Cyan", value: "#00D4FF" },
-  { label: "Violet", value: "#7B2FFF" },
-  { label: "Green", value: "#00FF88" },
-  { label: "Amber", value: "#FFB800" },
-  { label: "Red", value: "#FF3366" },
+  { label: "Blue", value: "#4B8EFF" },
+  { label: "Purple", value: "#8B5CF6" },
+  { label: "Green", value: "#34D399" },
+  { label: "Amber", value: "#FCD34D" },
+  { label: "Red", value: "#F87171" },
   { label: "Pink", value: "#FF6FD8" },
 ];
 
@@ -58,7 +58,7 @@ const DEFAULT_STATE = {
   category: "health",
   targetValue: "",
   unit: "",
-  color: "#00D4FF",
+  color: "#4B8EFF",
   icon: "star",
 };
 
@@ -95,9 +95,15 @@ export function HabitCreateDialog({ open, onOpenChange }: HabitCreateDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#12122A] border-white/[0.06] text-[#E8E8F0] max-w-lg">
+      <DialogContent
+        className="text-[#F1F5F9] max-w-lg"
+        style={{
+          background: "#0B1524",
+          border: "1px solid rgba(75,142,255,0.15)",
+        }}
+      >
         <DialogHeader>
-          <DialogTitle className="font-mono text-[#00D4FF]">New Habit</DialogTitle>
+          <DialogTitle className="font-mono text-[#4B8EFF]">New Habit</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,19 +112,33 @@ export function HabitCreateDialog({ open, onOpenChange }: HabitCreateDialogProps
             placeholder="Habit name..."
             value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
-            className="bg-white/[0.05] border-white/[0.06] text-[#E8E8F0] placeholder:text-[#8888AA]/50"
+            className="text-[#F1F5F9] placeholder:text-[#4B6080]"
+            style={{
+              background: "rgba(75,142,255,0.05)",
+              border: "1px solid rgba(75,142,255,0.15)",
+            }}
             autoFocus
           />
 
           {/* Category + Icon row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">Category</label>
+              <label className="text-xs text-[#94A3B8] mb-1 block">Category</label>
               <Select value={form.category} onValueChange={(v) => handleChange("category", v)}>
-                <SelectTrigger className="bg-white/[0.05] border-white/[0.06]">
+                <SelectTrigger
+                  style={{
+                    background: "rgba(75,142,255,0.05)",
+                    border: "1px solid rgba(75,142,255,0.15)",
+                  }}
+                >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#12122A] border-white/[0.06]">
+                <SelectContent
+                  style={{
+                    background: "#0B1524",
+                    border: "1px solid rgba(75,142,255,0.15)",
+                  }}
+                >
                   {CATEGORY_OPTIONS.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
@@ -129,12 +149,22 @@ export function HabitCreateDialog({ open, onOpenChange }: HabitCreateDialogProps
             </div>
 
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">Icon</label>
+              <label className="text-xs text-[#94A3B8] mb-1 block">Icon</label>
               <Select value={form.icon} onValueChange={(v) => handleChange("icon", v)}>
-                <SelectTrigger className="bg-white/[0.05] border-white/[0.06]">
+                <SelectTrigger
+                  style={{
+                    background: "rgba(75,142,255,0.05)",
+                    border: "1px solid rgba(75,142,255,0.15)",
+                  }}
+                >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#12122A] border-white/[0.06]">
+                <SelectContent
+                  style={{
+                    background: "#0B1524",
+                    border: "1px solid rgba(75,142,255,0.15)",
+                  }}
+                >
                   {ICON_OPTIONS.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       <span className="flex items-center gap-2">
@@ -151,42 +181,50 @@ export function HabitCreateDialog({ open, onOpenChange }: HabitCreateDialogProps
           {/* Target value + Unit row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">Target Value</label>
+              <label className="text-xs text-[#94A3B8] mb-1 block">Target Value</label>
               <Input
                 type="number"
                 placeholder="1"
                 min={1}
                 value={form.targetValue}
                 onChange={(e) => handleChange("targetValue", e.target.value)}
-                className="bg-white/[0.05] border-white/[0.06] text-[#E8E8F0]"
+                className="text-[#F1F5F9]"
+                style={{
+                  background: "rgba(75,142,255,0.05)",
+                  border: "1px solid rgba(75,142,255,0.15)",
+                }}
               />
             </div>
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">Unit</label>
+              <label className="text-xs text-[#94A3B8] mb-1 block">Unit</label>
               <Input
                 placeholder="times, mins, pages..."
                 value={form.unit}
                 onChange={(e) => handleChange("unit", e.target.value)}
-                className="bg-white/[0.05] border-white/[0.06] text-[#E8E8F0] placeholder:text-[#8888AA]/50"
+                className="text-[#F1F5F9] placeholder:text-[#4B6080]"
+                style={{
+                  background: "rgba(75,142,255,0.05)",
+                  border: "1px solid rgba(75,142,255,0.15)",
+                }}
               />
             </div>
           </div>
 
           {/* Color swatches */}
           <div>
-            <label className="text-xs text-[#8888AA] mb-2 block">Color</label>
+            <label className="text-xs text-[#94A3B8] mb-2 block">Color</label>
             <div className="flex gap-2 flex-wrap">
               {COLOR_SWATCHES.map((swatch) => (
                 <button
                   key={swatch.value}
                   type="button"
                   onClick={() => handleChange("color", swatch.value)}
-                  className="w-7 h-7 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                  className="w-7 h-7 rounded-full transition-transform duration-200 hover:scale-110 focus:outline-none active:scale-[0.97]"
                   style={{
                     background: swatch.value,
                     boxShadow:
                       form.color === swatch.value
-                        ? `0 0 0 2px #0A0A1A, 0 0 0 4px ${swatch.value}`
+                        ? `0 0 0 2px #0B1524, 0 0 0 4px ${swatch.value}`
                         : "none",
                     transform: form.color === swatch.value ? "scale(1.15)" : "scale(1)",
                   }}
@@ -202,14 +240,24 @@ export function HabitCreateDialog({ open, onOpenChange }: HabitCreateDialogProps
               type="button"
               variant="ghost"
               onClick={() => onOpenChange(false)}
-              className="text-[#8888AA]"
+              className="text-[#94A3B8] hover:text-[#F1F5F9] transition-colors duration-200"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={!form.name.trim() || createHabit.isPending}
-              className="bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0A0A1A] font-medium"
+              className="font-medium active:scale-[0.97] transition-all duration-200"
+              style={{
+                background: "#4B8EFF",
+                color: "#060B14",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#5B9EFF";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#4B8EFF";
+              }}
             >
               {createHabit.isPending ? "Creating..." : "Create Habit"}
             </Button>

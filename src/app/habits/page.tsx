@@ -23,18 +23,28 @@ export default function HabitsPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-mono font-bold">
-              <span className="bg-gradient-to-r from-[#FFB800] to-[#FF3366] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
                 Habits
               </span>
             </h1>
-            <p className="text-sm mt-1" style={{ color: "#8888AA" }}>
+            <p className="text-sm mt-1 text-[#94A3B8]">
               Track your daily disciplines
             </p>
           </div>
 
           <Button
             onClick={() => setCreateOpen(true)}
-            className="bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0A0A1A] font-medium font-mono flex items-center gap-1.5 flex-shrink-0"
+            className="font-medium font-mono flex items-center gap-1.5 flex-shrink-0 active:scale-[0.97] transition-all duration-200"
+            style={{
+              background: "#4B8EFF",
+              color: "#060B14",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#5B9EFF";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "#4B8EFF";
+            }}
           >
             <Plus className="w-4 h-4" />
             Add Habit
@@ -45,10 +55,7 @@ export default function HabitsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Daily check-in (2/3 width) */}
           <div className="lg:col-span-2 space-y-3">
-            <h2
-              className="font-mono text-xs uppercase tracking-widest"
-              style={{ color: "#8888AA" }}
-            >
+            <h2 className="font-mono text-xs uppercase tracking-widest text-[#F1F5F9]">
               Today's Check-in
             </h2>
             <HabitCheckIn />
@@ -64,11 +71,8 @@ export default function HabitsPage() {
         {heatmapHabits.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Flame className="w-4 h-4" style={{ color: "#FFB800" }} />
-              <h2
-                className="font-mono text-xs uppercase tracking-widest"
-                style={{ color: "#8888AA" }}
-              >
+              <Flame className="w-4 h-4" style={{ color: "#4B8EFF" }} />
+              <h2 className="font-mono text-xs uppercase tracking-widest text-[#F1F5F9]">
                 Progress Heatmaps
               </h2>
             </div>

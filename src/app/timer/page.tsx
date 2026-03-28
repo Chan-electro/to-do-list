@@ -9,10 +9,10 @@ import { Timer, Clock, Hourglass } from "lucide-react";
 
 type TimerTab = "pomodoro" | "stopwatch" | "countdown";
 
-const TABS: { id: TimerTab; label: string; icon: React.ElementType; color: string }[] = [
-  { id: "pomodoro", label: "Pomodoro", icon: Timer, color: "#00D4FF" },
-  { id: "stopwatch", label: "Stopwatch", icon: Clock, color: "#FFB800" },
-  { id: "countdown", label: "Countdown", icon: Hourglass, color: "#7B2FFF" },
+const TABS: { id: TimerTab; label: string; icon: React.ElementType }[] = [
+  { id: "pomodoro", label: "Pomodoro", icon: Timer },
+  { id: "stopwatch", label: "Stopwatch", icon: Clock },
+  { id: "countdown", label: "Countdown", icon: Hourglass },
 ];
 
 export default function TimerPage() {
@@ -20,21 +20,24 @@ export default function TimerPage() {
 
   return (
     <AppShell>
-      <div className="space-y-6">
+      <div className="space-y-6" style={{ backgroundColor: "#060B14" }}>
         <div>
           <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#00D4FF] to-[#7B2FFF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
               Time Suite
             </span>
           </h1>
-          <p className="text-sm text-[#8888AA] mt-1">
+          <p className="text-sm text-[#94A3B8] mt-1">
             Focus, track, and optimize your time
           </p>
         </div>
 
         {/* Tab Selector */}
         <div className="flex justify-center">
-          <div className="glass rounded-xl p-1 inline-flex gap-1">
+          <div
+            className="glass rounded-xl p-1 inline-flex gap-1"
+            style={{ border: "1px solid rgba(75,142,255,0.12)" }}
+          >
             {TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -42,12 +45,15 @@ export default function TimerPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-sm transition-all ${
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-sm transition-all duration-200"
+                  style={
                     isActive
-                      ? "bg-white/[0.08]"
-                      : "text-[#8888AA] hover:text-[#E8E8F0]"
-                  }`}
-                  style={isActive ? { color: tab.color } : undefined}
+                      ? {
+                          background: "rgba(75,142,255,0.12)",
+                          color: "#4B8EFF",
+                        }
+                      : { color: "#94A3B8" }
+                  }
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -58,7 +64,10 @@ export default function TimerPage() {
         </div>
 
         {/* Timer Content */}
-        <div className="glass rounded-xl p-8 md:p-12 flex justify-center">
+        <div
+          className="glass rounded-2xl p-8 md:p-12 flex justify-center"
+          style={{ border: "1px solid rgba(75,142,255,0.12)" }}
+        >
           {activeTab === "pomodoro" && <PomodoroTimer />}
           {activeTab === "stopwatch" && <Stopwatch />}
           {activeTab === "countdown" && <CountdownTimer />}

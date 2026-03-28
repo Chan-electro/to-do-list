@@ -25,29 +25,29 @@ export function ProductivityScore() {
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   const scoreColor =
-    score >= 80 ? "#00FF88" : score >= 50 ? "#00D4FF" : score >= 30 ? "#FFB800" : "#FF3366";
+    score >= 80 ? "#34D399" : score >= 50 ? "#4B8EFF" : score >= 30 ? "#FCD34D" : "#F87171";
 
   const statRows = [
     {
-      icon: <CheckSquare className="w-4 h-4 text-[#00D4FF]" />,
+      icon: <CheckSquare className="w-4 h-4 text-[#4B8EFF]" />,
       label: "Tasks Completed",
       value: tasksCompleted,
       unit: "today",
     },
     {
-      icon: <Clock className="w-4 h-4 text-[#7B2FFF]" />,
+      icon: <Clock className="w-4 h-4 text-[#8B5CF6]" />,
       label: "Focus Time",
       value: focusMinutes,
       unit: "min",
     },
     {
-      icon: <Zap className="w-4 h-4 text-[#00FF88]" />,
+      icon: <Zap className="w-4 h-4 text-[#34D399]" />,
       label: "Habits Done",
       value: `${habitsCompleted}/${habitsTotal}`,
       unit: "",
     },
     {
-      icon: <Flame className="w-4 h-4 text-[#FFB800]" />,
+      icon: <Flame className="w-4 h-4 text-[#FCD34D]" />,
       label: "Best Streak",
       value: bestStreak,
       unit: "days",
@@ -56,17 +56,26 @@ export function ProductivityScore() {
 
   return (
     <div
-      className="rounded-xl p-6 h-full flex flex-col"
+      className="glass rounded-2xl p-6 h-full flex flex-col"
       style={{
-        background: "rgba(26,26,62,0.6)",
+        background: "rgba(11, 21, 36, 0.75)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        border: "1px solid rgba(75, 142, 255, 0.12)",
+        transition: "border-color 200ms ease, transform 200ms ease",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.25)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-1px)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(75, 142, 255, 0.12)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
       }}
     >
       {/* Title */}
       <div className="mb-4">
-        <h2 className="text-sm font-mono font-semibold text-[#8888AA] uppercase tracking-widest">
+        <h2 className="text-sm font-mono font-semibold text-[#94A3B8] uppercase tracking-widest">
           Productivity Score
         </h2>
       </div>
@@ -81,7 +90,7 @@ export function ProductivityScore() {
               cy="68"
               r={radius}
               fill="none"
-              stroke="rgba(255,255,255,0.06)"
+              stroke="rgba(75, 142, 255, 0.1)"
               strokeWidth="8"
             />
             {/* Progress */}
@@ -90,20 +99,20 @@ export function ProductivityScore() {
               cy="68"
               r={radius}
               fill="none"
-              stroke={scoreColor}
+              stroke="#4B8EFF"
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={circumference}
               initial={{ strokeDashoffset: circumference }}
               animate={{ strokeDashoffset: isLoading ? circumference : strokeDashoffset }}
               transition={{ duration: 1.5, ease: "easeOut" }}
-              style={{ filter: `drop-shadow(0 0 8px ${scoreColor}60)` }}
+              style={{ filter: "drop-shadow(0 0 6px rgba(75, 142, 255, 0.4))" }}
             />
           </svg>
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <motion.span
-              className="text-3xl font-mono font-bold"
+              className="text-4xl font-mono font-bold"
               style={{ color: scoreColor }}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -111,7 +120,7 @@ export function ProductivityScore() {
             >
               {isLoading ? "--" : score}
             </motion.span>
-            <span className="text-[10px] text-[#8888AA] font-mono tracking-wider">
+            <span className="text-[10px] text-[#4B6080] font-mono tracking-wider">
               / 100
             </span>
           </div>
@@ -120,7 +129,7 @@ export function ProductivityScore() {
 
       {/* Formula */}
       <div className="text-center mb-5">
-        <p className="text-[10px] font-mono text-[#8888AA]/70 tracking-wide">
+        <p className="text-[10px] font-mono text-[#4B6080] tracking-wide">
           Tasks × 0.4 + Focus × 0.3 + Habits × 0.3
         </p>
       </div>
@@ -131,16 +140,16 @@ export function ProductivityScore() {
           <div
             key={row.label}
             className="flex items-center justify-between px-3 py-2 rounded-lg"
-            style={{ background: "rgba(255,255,255,0.03)" }}
+            style={{ background: "rgba(75, 142, 255, 0.03)" }}
           >
             <div className="flex items-center gap-2">
               {row.icon}
-              <span className="text-xs text-[#8888AA] font-mono">{row.label}</span>
+              <span className="text-xs text-[#94A3B8] font-mono">{row.label}</span>
             </div>
-            <span className="text-xs font-mono font-semibold text-[#E8E8F0]">
+            <span className="text-xs font-mono font-semibold text-[#F1F5F9]">
               {isLoading ? "--" : row.value}
               {row.unit && (
-                <span className="text-[#8888AA] ml-1 font-normal">{row.unit}</span>
+                <span className="text-[#94A3B8] ml-1 font-normal">{row.unit}</span>
               )}
             </span>
           </div>

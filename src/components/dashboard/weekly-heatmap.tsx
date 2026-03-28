@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 import { format, subDays } from "date-fns";
 
 const INTENSITY_COLORS = [
-  "rgba(255,255,255,0.04)", // 0 - empty
-  "rgba(0,212,255,0.2)",    // 1 - low
-  "rgba(0,212,255,0.4)",    // 2 - medium
-  "rgba(0,212,255,0.65)",   // 3 - high
-  "#00D4FF",                // 4 - max
+  "rgba(75, 142, 255, 0.04)",  // 0 - empty
+  "rgba(75, 142, 255, 0.18)",  // 1 - low
+  "rgba(75, 142, 255, 0.36)",  // 2 - medium
+  "rgba(75, 142, 255, 0.58)",  // 3 - high
+  "#4B8EFF",                   // 4 - max
 ];
 
 export function WeeklyHeatmap() {
@@ -21,14 +21,15 @@ export function WeeklyHeatmap() {
       date,
       label: format(date, "EEE"),
       fullDate: format(date, "MMM d"),
+      isToday: i === 6,
       // Sample intensity - replace with real data later
       intensity: Math.floor(Math.random() * 5),
     };
   });
 
   return (
-    <div className="glass rounded-xl p-5">
-      <h2 className="text-lg font-mono font-semibold text-[#E8E8F0] mb-4">
+    <div className="glass rounded-2xl p-5">
+      <h2 className="text-lg font-mono font-semibold text-[#F1F5F9] mb-4">
         This Week
       </h2>
       <div className="flex items-end justify-between gap-2">
@@ -41,18 +42,28 @@ export function WeeklyHeatmap() {
             className="flex flex-col items-center gap-2 flex-1"
           >
             <div
-              className="w-full aspect-square rounded-md transition-colors"
-              style={{ backgroundColor: INTENSITY_COLORS[day.intensity] }}
+              className="w-full aspect-square rounded-md transition-colors duration-200"
+              style={{
+                backgroundColor: INTENSITY_COLORS[day.intensity],
+                boxShadow: day.isToday
+                  ? "0 0 0 1.5px #4B8EFF"
+                  : undefined,
+              }}
               title={`${day.fullDate}: Level ${day.intensity}`}
             />
-            <span className="text-[10px] font-mono text-[#8888AA]">
+            <span
+              className="text-[10px] font-mono"
+              style={{
+                color: day.isToday ? "#4B8EFF" : "#94A3B8",
+              }}
+            >
               {day.label}
             </span>
           </motion.div>
         ))}
       </div>
       <div className="flex items-center justify-end gap-1.5 mt-3">
-        <span className="text-[10px] text-[#8888AA]">Less</span>
+        <span className="text-[10px] text-[#94A3B8]">Less</span>
         {INTENSITY_COLORS.map((color, i) => (
           <div
             key={i}
@@ -60,7 +71,7 @@ export function WeeklyHeatmap() {
             style={{ backgroundColor: color }}
           />
         ))}
-        <span className="text-[10px] text-[#8888AA]">More</span>
+        <span className="text-[10px] text-[#94A3B8]">More</span>
       </div>
     </div>
   );

@@ -14,11 +14,11 @@ export default function AnalyticsPage() {
         {/* Page Header */}
         <div>
           <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#00D4FF] to-[#7B2FFF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
               Analytics
             </span>
           </h1>
-          <p className="text-sm text-[#8888AA] mt-1 font-mono">
+          <p className="text-sm text-[#94A3B8] mt-1 font-mono">
             Your productivity nerve center
           </p>
         </div>

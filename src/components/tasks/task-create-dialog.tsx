@@ -69,12 +69,29 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
     });
   };
 
+  const inputStyle = {
+    background: "rgba(75, 142, 255, 0.05)",
+    border: "1px solid rgba(75, 142, 255, 0.15)",
+    color: "#F1F5F9",
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#12122A] border-white/[0.06] text-[#E8E8F0] max-w-lg">
+      <DialogContent
+        className="max-w-lg"
+        style={{
+          background: "#0B1524",
+          border: "1px solid rgba(75, 142, 255, 0.15)",
+          color: "#F1F5F9",
+        }}
+      >
         <DialogHeader>
-          <DialogTitle className="font-mono text-[#00D4FF]">
-            New Task
+          <DialogTitle className="font-mono">
+            <span
+              className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent"
+            >
+              New Task
+            </span>
           </DialogTitle>
         </DialogHeader>
 
@@ -83,7 +100,8 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
             placeholder="Task title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="bg-white/[0.05] border-white/[0.06] text-[#E8E8F0] placeholder:text-[#8888AA]/50"
+            className="placeholder:text-[#4B6080]"
+            style={inputStyle}
             autoFocus
           />
 
@@ -91,36 +109,55 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
             placeholder="Description (optional)..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="bg-white/[0.05] border-white/[0.06] text-[#E8E8F0] placeholder:text-[#8888AA]/50 min-h-[80px]"
+            className="placeholder:text-[#4B6080] min-h-[80px]"
+            style={inputStyle}
           />
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">
+              <label className="text-xs text-[#94A3B8] mb-1 block">
                 Priority
               </label>
               <Select value={priority} onValueChange={setPriority}>
-                <SelectTrigger className="bg-white/[0.05] border-white/[0.06]">
+                <SelectTrigger style={inputStyle}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#12122A] border-white/[0.06]">
-                  <SelectItem value="P1">P1 - Critical</SelectItem>
-                  <SelectItem value="P2">P2 - High</SelectItem>
-                  <SelectItem value="P3">P3 - Medium</SelectItem>
-                  <SelectItem value="P4">P4 - Low</SelectItem>
+                <SelectContent
+                  style={{
+                    background: "#0F1D30",
+                    border: "1px solid rgba(75, 142, 255, 0.12)",
+                  }}
+                >
+                  <SelectItem value="P1">
+                    <span className="text-[#F87171]">P1</span> - Critical
+                  </SelectItem>
+                  <SelectItem value="P2">
+                    <span className="text-[#FCD34D]">P2</span> - High
+                  </SelectItem>
+                  <SelectItem value="P3">
+                    <span className="text-[#4B8EFF]">P3</span> - Medium
+                  </SelectItem>
+                  <SelectItem value="P4">
+                    <span className="text-[#4B6080]">P4</span> - Low
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">
+              <label className="text-xs text-[#94A3B8] mb-1 block">
                 Domain
               </label>
               <Select value={domain} onValueChange={setDomain}>
-                <SelectTrigger className="bg-white/[0.05] border-white/[0.06]">
+                <SelectTrigger style={inputStyle}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#12122A] border-white/[0.06]">
+                <SelectContent
+                  style={{
+                    background: "#0F1D30",
+                    border: "1px solid rgba(75, 142, 255, 0.12)",
+                  }}
+                >
                   <SelectItem value="personal">Personal</SelectItem>
                   <SelectItem value="professional">Professional</SelectItem>
                 </SelectContent>
@@ -128,14 +165,19 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
             </div>
 
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">
+              <label className="text-xs text-[#94A3B8] mb-1 block">
                 Assignee
               </label>
               <Select value={assignee} onValueChange={setAssignee}>
-                <SelectTrigger className="bg-white/[0.05] border-white/[0.06]">
+                <SelectTrigger style={inputStyle}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#12122A] border-white/[0.06]">
+                <SelectContent
+                  style={{
+                    background: "#0F1D30",
+                    border: "1px solid rgba(75, 142, 255, 0.12)",
+                  }}
+                >
                   <SelectItem value="Self">Self</SelectItem>
                   <SelectItem value="Maneesh">Maneesh</SelectItem>
                   <SelectItem value="Ashish">Ashish</SelectItem>
@@ -147,7 +189,7 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
             </div>
 
             <div>
-              <label className="text-xs text-[#8888AA] mb-1 block">
+              <label className="text-xs text-[#94A3B8] mb-1 block">
                 Est. Minutes
               </label>
               <Input
@@ -155,20 +197,20 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
                 placeholder="60"
                 value={estimatedMinutes}
                 onChange={(e) => setEstimatedMinutes(e.target.value)}
-                className="bg-white/[0.05] border-white/[0.06]"
+                style={inputStyle}
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs text-[#8888AA] mb-1 block">
+            <label className="text-xs text-[#94A3B8] mb-1 block">
               Due Date
             </label>
             <Input
               type="datetime-local"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="bg-white/[0.05] border-white/[0.06] text-[#E8E8F0]"
+              style={{ ...inputStyle, colorScheme: "dark" }}
             />
           </div>
 
@@ -177,14 +219,24 @@ export function TaskCreateDialog({ open, onOpenChange }: TaskCreateDialogProps) 
               type="button"
               variant="ghost"
               onClick={() => onOpenChange(false)}
-              className="text-[#8888AA]"
+              className="text-[#94A3B8] hover:text-[#F1F5F9] transition-colors duration-200"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={!title.trim() || createTask.isPending}
-              className="bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#0A0A1A] font-medium"
+              className="font-medium transition-all duration-150 active:scale-[0.96]"
+              style={{
+                background: "#4B8EFF",
+                color: "#060B14",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#5B9EFF";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#4B8EFF";
+              }}
             >
               {createTask.isPending ? "Creating..." : "Create Task"}
             </Button>

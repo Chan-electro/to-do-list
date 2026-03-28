@@ -56,13 +56,21 @@ export function AchievementsGrid() {
   ).length;
 
   return (
-    <div className="rounded-xl bg-[rgba(26,26,62,0.6)] backdrop-blur-xl border border-white/[0.06] p-4">
+    <div
+      className="glass rounded-2xl p-5"
+      style={{
+        background: "rgba(11, 21, 36, 0.75)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        border: "1px solid rgba(75, 142, 255, 0.12)",
+      }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-mono font-semibold text-[#E8E8F0] uppercase tracking-wider">
+        <h3 className="text-sm font-mono font-semibold text-[#F1F5F9] uppercase tracking-wider">
           Achievements
         </h3>
-        <span className="text-xs font-mono text-[#8888AA]">
+        <span className="text-xs font-mono text-[#94A3B8]">
           {unlockedCount} / {ACHIEVEMENTS.length} unlocked
         </span>
       </div>

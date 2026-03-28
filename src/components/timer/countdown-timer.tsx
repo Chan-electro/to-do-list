@@ -48,9 +48,13 @@ export function CountdownTimer() {
     setState("idle");
   };
 
+  const pct = target > 0 ? (remaining / target) * 100 : 0;
+  const ringColor =
+    pct > 50 ? "#34D399" : pct > 20 ? "#FCD34D" : "#F87171";
+
   return (
     <div className="flex flex-col items-center">
-      <span className="text-sm font-mono uppercase tracking-widest text-[#7B2FFF] mb-6">
+      <span className="text-sm font-mono uppercase tracking-widest text-[#4B8EFF] mb-6">
         Countdown
       </span>
 
@@ -60,31 +64,57 @@ export function CountdownTimer() {
           <button
             key={preset.label}
             onClick={() => selectPreset(preset.seconds)}
-            className={`px-4 py-2 rounded-lg font-mono text-sm transition-colors ${
+            className="px-4 py-2 rounded-lg font-mono text-sm transition-colors duration-200"
+            style={
               target === preset.seconds
-                ? "bg-[#7B2FFF]/20 text-[#7B2FFF] border border-[#7B2FFF]/30"
-                : "bg-white/[0.03] text-[#8888AA] hover:text-[#E8E8F0] border border-white/[0.06]"
-            }`}
+                ? {
+                    background: "rgba(75,142,255,0.12)",
+                    color: "#4B8EFF",
+                    border: "1px solid rgba(75,142,255,0.25)",
+                  }
+                : {
+                    background: "rgba(75,142,255,0.04)",
+                    color: "#94A3B8",
+                    border: "1px solid rgba(75,142,255,0.1)",
+                  }
+            }
           >
             {preset.label}
           </button>
         ))}
       </div>
 
-      {/* Time Display */}
-      <div className="text-6xl font-mono font-bold text-[#E8E8F0] mb-8">
-        {formatTime(remaining)}
-      </div>
-
-      {/* Progress Bar */}
-      <div className="w-full max-w-xs h-1 bg-white/[0.06] rounded-full mb-8 overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-1000 ease-linear"
-          style={{
-            width: `${target > 0 ? ((target - remaining) / target) * 100 : 0}%`,
-            backgroundColor: "#7B2FFF",
-          }}
-        />
+      {/* Ring + Time Display */}
+      <div className="relative w-48 h-48 mb-8">
+        <svg className="w-48 h-48 -rotate-90" viewBox="0 0 200 200">
+          <circle
+            cx="100"
+            cy="100"
+            r="88"
+            fill="none"
+            stroke="rgba(75,142,255,0.1)"
+            strokeWidth="5"
+          />
+          <circle
+            cx="100"
+            cy="100"
+            r="88"
+            fill="none"
+            stroke={ringColor}
+            strokeWidth="5"
+            strokeLinecap="round"
+            strokeDasharray={2 * Math.PI * 88}
+            strokeDashoffset={
+              2 * Math.PI * 88 - (pct / 100) * 2 * Math.PI * 88
+            }
+            style={{ transition: "stroke-dashoffset 1s linear, stroke 0.5s ease" }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-5xl font-mono font-semibold text-[#F1F5F9]">
+            {formatTime(remaining)}
+          </span>
+        </div>
       </div>
 
       {/* Controls */}
@@ -96,14 +126,35 @@ export function CountdownTimer() {
             setState("idle");
             setRemaining(target);
           }}
-          className="w-12 h-12 rounded-full text-[#8888AA] hover:text-[#E8E8F0]"
+          className="w-12 h-12 rounded-full text-[#94A3B8] hover:text-[#F1F5F9] transition-colors duration-200"
+          style={{ border: "1px solid rgba(75,142,255,0.2)" }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor =
+              "rgba(75,142,255,0.4)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor =
+              "rgba(75,142,255,0.2)";
+          }}
         >
           <RotateCcw className="w-5 h-5" />
         </Button>
 
         <Button
           onClick={() => setState(state === "running" ? "paused" : "running")}
-          className="w-16 h-16 rounded-full bg-[#7B2FFF] hover:bg-[#7B2FFF]/90 text-white"
+          className="w-16 h-16 rounded-xl active:scale-[0.97] transition-all duration-200 font-bold"
+          style={{
+            backgroundColor: "#4B8EFF",
+            color: "#060B14",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+              "#5B9EFF";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor =
+              "#4B8EFF";
+          }}
         >
           {state === "running" ? (
             <Pause className="w-7 h-7" />
@@ -112,7 +163,7 @@ export function CountdownTimer() {
           )}
         </Button>
 
-        <div className="w-12 h-12" /> {/* Spacer for alignment */}
+        <div className="w-12 h-12" />
       </div>
     </div>
   );

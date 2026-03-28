@@ -36,21 +36,25 @@ export function Sidebar() {
     <motion.aside
       animate={{ width: collapsed ? 64 : 256 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed left-0 top-0 h-screen z-40 flex flex-col overflow-hidden border-r border-white/10"
+      className="fixed left-0 top-0 h-screen z-40 flex flex-col overflow-hidden"
       style={{
-        background: "rgba(18, 18, 42, 0.85)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "rgba(8, 14, 26, 0.92)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderRight: "1px solid rgba(75, 142, 255, 0.1)",
       }}
     >
       {/* Logo */}
-      <div className="flex items-center h-16 px-4 border-b border-white/10 flex-shrink-0">
+      <div
+        className="flex items-center h-16 px-4 flex-shrink-0"
+        style={{ borderBottom: "1px solid rgba(75, 142, 255, 0.08)" }}
+      >
         <Link href="/" className="flex items-center gap-3 overflow-hidden">
           <span
             className="text-lg font-bold tracking-widest font-mono flex-shrink-0"
             style={{
-              color: "#00D4FF",
-              textShadow: "0 0 12px rgba(0, 212, 255, 0.8)",
+              color: "#4B8EFF",
+              textShadow: "0 0 16px rgba(75, 142, 255, 0.5)",
               fontFamily: "'JetBrains Mono', monospace",
             }}
           >
@@ -66,8 +70,8 @@ export function Sidebar() {
                 transition={{ duration: 0.2 }}
                 className="text-lg font-bold tracking-widest font-mono whitespace-nowrap"
                 style={{
-                  color: "#00D4FF",
-                  textShadow: "0 0 12px rgba(0, 212, 255, 0.8)",
+                  color: "#4B8EFF",
+                  textShadow: "0 0 16px rgba(75, 142, 255, 0.5)",
                   fontFamily: "'JetBrains Mono', monospace",
                 }}
               >
@@ -90,18 +94,18 @@ export function Sidebar() {
               className="flex items-center gap-3 rounded-md px-2 py-2.5 transition-all duration-200 group relative overflow-hidden"
               style={{
                 borderLeft: isActive
-                  ? "2px solid #00D4FF"
+                  ? "2px solid #4B8EFF"
                   : "2px solid transparent",
                 background: isActive
-                  ? "rgba(0, 212, 255, 0.08)"
+                  ? "rgba(75, 142, 255, 0.08)"
                   : "transparent",
-                color: isActive ? "#00D4FF" : "rgba(255,255,255,0.6)",
+                color: isActive ? "#4B8EFF" : "rgba(255,255,255,0.6)",
               }}
             >
               {/* Hover background */}
               <span
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-md"
-                style={{ background: "rgba(0, 212, 255, 0.05)" }}
+                style={{ background: "rgba(75, 142, 255, 0.05)" }}
               />
 
               <Icon
@@ -110,8 +114,8 @@ export function Sidebar() {
                 style={
                   isActive
                     ? {
-                        color: "#00D4FF",
-                        filter: "drop-shadow(0 0 6px rgba(0, 212, 255, 0.7))",
+                        color: "#4B8EFF",
+                        filter: "drop-shadow(0 0 6px rgba(75, 142, 255, 0.6))",
                       }
                     : { color: "rgba(255,255,255,0.6)" }
                 }
@@ -129,8 +133,8 @@ export function Sidebar() {
                     style={
                       isActive
                         ? {
-                            color: "#00D4FF",
-                            textShadow: "0 0 8px rgba(0, 212, 255, 0.6)",
+                            color: "#4B8EFF",
+                            textShadow: "0 0 8px rgba(75, 142, 255, 0.4)",
                           }
                         : {}
                     }
@@ -150,7 +154,7 @@ export function Sidebar() {
           <div className="flex justify-center py-2">
             <Trophy
               size={16}
-              style={{ color: "#FFB800", filter: "drop-shadow(0 0 5px rgba(255,184,0,0.6))" }}
+              style={{ color: "#FCD34D", filter: "drop-shadow(0 0 5px rgba(252, 211, 77, 0.5))" }}
             />
           </div>
         ) : (
@@ -169,11 +173,14 @@ export function Sidebar() {
       </div>
 
       {/* Collapse Toggle */}
-      <div className="flex-shrink-0 p-2 border-t border-white/10">
+      <div
+        className="flex-shrink-0 p-2"
+        style={{ borderTop: "1px solid rgba(75, 142, 255, 0.08)" }}
+      >
         <button
           onClick={() => setCollapsed((prev) => !prev)}
           className="flex items-center justify-center w-full rounded-md py-2 px-2 transition-all duration-200 group"
-          style={{ color: "rgba(255,255,255,0.4)" }}
+          style={{ color: "rgba(255,255,255,0.35)" }}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <span
@@ -183,13 +190,15 @@ export function Sidebar() {
             {collapsed ? (
               <ChevronsRight
                 size={18}
-                className="group-hover:text-cyan-400 transition-colors duration-200"
+                className="transition-colors duration-200"
+                style={{ color: "inherit" }}
               />
             ) : (
               <>
                 <ChevronsLeft
                   size={18}
-                  className="group-hover:text-cyan-400 transition-colors duration-200 flex-shrink-0"
+                  className="transition-colors duration-200 flex-shrink-0"
+                  style={{ color: "inherit" }}
                 />
                 <AnimatePresence initial={false}>
                   <motion.span
@@ -198,7 +207,8 @@ export function Sidebar() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
-                    className="text-xs whitespace-nowrap group-hover:text-cyan-400 transition-colors duration-200"
+                    className="text-xs whitespace-nowrap transition-colors duration-200"
+                    style={{ color: "inherit" }}
                   >
                     Collapse
                   </motion.span>

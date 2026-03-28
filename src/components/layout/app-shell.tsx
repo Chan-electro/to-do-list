@@ -11,7 +11,7 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <div
       className="min-h-screen flex"
-      style={{ background: "#0A0A1A" }}
+      style={{ background: "#060B14" }}
     >
       {/* Desktop sidebar — hidden on mobile */}
       <div className="hidden md:block flex-shrink-0">

@@ -15,11 +15,11 @@ export default function DashboardPage() {
         {/* Page Header */}
         <div>
           <h1 className="text-2xl md:text-3xl font-mono font-bold">
-            <span className="bg-gradient-to-r from-[#00D4FF] to-[#7B2FFF] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#4B8EFF] to-[#8B5CF6] bg-clip-text text-transparent">
               Mission Control
             </span>
           </h1>
-          <p className="text-sm text-[#8888AA] mt-1">
+          <p className="text-sm mt-1" style={{ color: "#94A3B8" }}>
             Your command center overview
           </p>
         </div>
@@ -41,8 +41,10 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <QuickStats />
             <WeeklyHeatmap />
-            <div className="glass rounded-xl p-5">
-              <h2 className="text-lg font-mono font-semibold text-[#E8E8F0] mb-4">Achievements</h2>
+            <div className="glass rounded-2xl p-5">
+              <h2 className="text-lg font-mono font-semibold text-[#F1F5F9] mb-4">
+                Achievements
+              </h2>
               <AchievementsGrid />
             </div>
           </div>

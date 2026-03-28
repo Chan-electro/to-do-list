@@ -19,11 +19,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const PRIORITY_COLORS: Record<string, string> = {
-  P1: "#FF3366",
-  P2: "#FFB800",
-  P3: "#00D4FF",
-  P4: "#8888AA",
+const PRIORITY_COLORS: Record<string, { text: string; bg: string }> = {
+  P1: { text: "#F87171", bg: "rgba(248, 113, 113, 0.12)" },
+  P2: { text: "#FCD34D", bg: "rgba(252, 211, 77, 0.12)" },
+  P3: { text: "#4B8EFF", bg: "rgba(75, 142, 255, 0.12)" },
+  P4: { text: "#4B6080", bg: "rgba(75, 96, 128, 0.12)" },
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -68,7 +68,8 @@ export function TaskListView({ search }: TaskListViewProps) {
         {[1, 2, 3, 4, 5].map((i) => (
           <div
             key={i}
-            className="h-16 rounded-lg bg-white/[0.03] animate-pulse"
+            className="h-16 rounded-lg animate-pulse"
+            style={{ background: "rgba(75, 142, 255, 0.04)" }}
           />
         ))}
       </div>
@@ -78,9 +79,17 @@ export function TaskListView({ search }: TaskListViewProps) {
   const activeTasks = (tasks ?? []).filter((t) => t.status !== "archived");
 
   return (
-    <div className="glass rounded-xl overflow-hidden">
+    <div
+      className="glass rounded-2xl overflow-hidden"
+    >
       {/* Table Header */}
-      <div className="grid grid-cols-[auto_1fr_100px_100px_100px_80px_40px] gap-3 p-3 border-b border-white/[0.06] text-xs font-mono text-[#8888AA] uppercase tracking-wider">
+      <div
+        className="grid grid-cols-[auto_1fr_100px_100px_100px_80px_40px] gap-3 p-3 text-xs font-mono uppercase tracking-wider"
+        style={{
+          color: "#94A3B8",
+          borderBottom: "1px solid rgba(75, 142, 255, 0.08)",
+        }}
+      >
         <div className="w-6" />
         <div>Title</div>
         <div className="hidden md:block">Priority</div>
@@ -92,118 +101,140 @@ export function TaskListView({ search }: TaskListViewProps) {
 
       {/* Task Rows */}
       <AnimatePresence>
-        {activeTasks.map((task, index) => (
-          <motion.div
-            key={task.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ delay: index * 0.02 }}
-            className="grid grid-cols-[auto_1fr_100px_100px_100px_80px_40px] gap-3 p-3 items-center border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors group"
-          >
-            {/* Checkbox */}
-            <button onClick={() => handleToggle(task.id, task.status)}>
-              {task.status === "done" ? (
-                <CheckCircle2 className="w-5 h-5 text-[#00FF88]" />
-              ) : (
-                <Circle className="w-5 h-5 text-[#8888AA] group-hover:text-[#00D4FF]" />
-              )}
-            </button>
+        {activeTasks.map((task, index) => {
+          const priorityStyle = PRIORITY_COLORS[task.priority] ?? PRIORITY_COLORS.P4;
+          return (
+            <motion.div
+              key={task.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ delay: index * 0.02 }}
+              className="grid grid-cols-[auto_1fr_100px_100px_100px_80px_40px] gap-3 p-3 items-center transition-all duration-200 group"
+              style={{
+                borderBottom: "1px solid rgba(75, 142, 255, 0.05)",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background =
+                  "rgba(75, 142, 255, 0.03)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background = "transparent";
+              }}
+            >
+              {/* Checkbox */}
+              <button onClick={() => handleToggle(task.id, task.status)}>
+                {task.status === "done" ? (
+                  <CheckCircle2 className="w-5 h-5" style={{ color: "#34D399" }} />
+                ) : (
+                  <Circle
+                    className="w-5 h-5 transition-colors duration-200 group-hover:text-[#4B8EFF]"
+                    style={{ color: "#94A3B8" }}
+                  />
+                )}
+              </button>
 
-            {/* Title */}
-            <div className="min-w-0">
-              <p
-                className={`text-sm truncate ${
-                  task.status === "done"
-                    ? "text-[#8888AA] line-through"
-                    : "text-[#E8E8F0]"
-                }`}
-              >
-                {task.title}
-              </p>
-              <div className="flex gap-1 mt-0.5 md:hidden">
-                <Badge
-                  className="text-[9px] font-mono border-0"
+              {/* Title */}
+              <div className="min-w-0">
+                <p
+                  className={`text-sm truncate ${
+                    task.status === "done"
+                      ? "line-through"
+                      : ""
+                  }`}
                   style={{
-                    backgroundColor: `${PRIORITY_COLORS[task.priority]}20`,
-                    color: PRIORITY_COLORS[task.priority],
+                    color: task.status === "done" ? "#4B6080" : "#F1F5F9",
+                  }}
+                >
+                  {task.title}
+                </p>
+                <div className="flex gap-1 mt-0.5 md:hidden">
+                  <Badge
+                    className="text-[9px] font-mono border-0"
+                    style={{
+                      backgroundColor: priorityStyle.bg,
+                      color: priorityStyle.text,
+                    }}
+                  >
+                    {task.priority}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Priority */}
+              <div className="hidden md:block">
+                <Badge
+                  className="text-[10px] font-mono border-0"
+                  style={{
+                    backgroundColor: priorityStyle.bg,
+                    color: priorityStyle.text,
                   }}
                 >
                   {task.priority}
                 </Badge>
               </div>
-            </div>
 
-            {/* Priority */}
-            <div className="hidden md:block">
-              <Badge
-                className="text-[10px] font-mono border-0"
-                style={{
-                  backgroundColor: `${PRIORITY_COLORS[task.priority]}20`,
-                  color: PRIORITY_COLORS[task.priority],
-                }}
-              >
-                {task.priority}
-              </Badge>
-            </div>
+              {/* Status */}
+              <div className="hidden md:block">
+                <span className="text-xs text-[#94A3B8]">
+                  {STATUS_LABELS[task.status] ?? task.status}
+                </span>
+              </div>
 
-            {/* Status */}
-            <div className="hidden md:block">
-              <span className="text-xs text-[#8888AA]">
-                {STATUS_LABELS[task.status] ?? task.status}
-              </span>
-            </div>
+              {/* Assignee */}
+              <div className="hidden md:flex items-center gap-1">
+                <User className="w-3 h-3 text-[#94A3B8]" />
+                <span className="text-xs text-[#94A3B8]">
+                  {task.assignee ?? "Self"}
+                </span>
+              </div>
 
-            {/* Assignee */}
-            <div className="hidden md:flex items-center gap-1">
-              <User className="w-3 h-3 text-[#8888AA]" />
-              <span className="text-xs text-[#8888AA]">
-                {task.assignee ?? "Self"}
-              </span>
-            </div>
+              {/* Due Date */}
+              <div className="hidden md:flex items-center gap-1">
+                {task.dueDate ? (
+                  <>
+                    <Clock className="w-3 h-3 text-[#94A3B8]" />
+                    <span className="text-xs text-[#94A3B8]">
+                      {task.dueDate.split("T")[0]?.slice(5)}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-[#4B6080]">—</span>
+                )}
+              </div>
 
-            {/* Due Date */}
-            <div className="hidden md:flex items-center gap-1">
-              {task.dueDate ? (
-                <>
-                  <Clock className="w-3 h-3 text-[#8888AA]" />
-                  <span className="text-xs text-[#8888AA]">
-                    {task.dueDate.split("T")[0]?.slice(5)}
-                  </span>
-                </>
-              ) : (
-                <span className="text-xs text-[#8888AA]/40">—</span>
-              )}
-            </div>
-
-            {/* Actions */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <MoreHorizontal className="w-4 h-4 text-[#8888AA]" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="bg-[#12122A] border-white/[0.06]"
-              >
-                <DropdownMenuItem className="text-xs text-[#E8E8F0]">
-                  <Edit2 className="w-3 h-3 mr-2" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-xs text-[#FF3366]"
-                  onClick={() => deleteTask.mutate({ id: task.id })}
+              {/* Actions */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <MoreHorizontal className="w-4 h-4 text-[#94A3B8]" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  style={{
+                    background: "#0F1D30",
+                    border: "1px solid rgba(75, 142, 255, 0.12)",
+                  }}
                 >
-                  <Trash2 className="w-3 h-3 mr-2" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </motion.div>
-        ))}
+                  <DropdownMenuItem className="text-xs text-[#F1F5F9]">
+                    <Edit2 className="w-3 h-3 mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-xs text-[#F87171]"
+                    onClick={() => deleteTask.mutate({ id: task.id })}
+                  >
+                    <Trash2 className="w-3 h-3 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </motion.div>
+          );
+        })}
       </AnimatePresence>
 
       {activeTasks.length === 0 && (
-        <div className="text-center py-12 text-[#8888AA] text-sm">
+        <div className="text-center py-12 text-[#94A3B8] text-sm">
           No tasks found. Create one to get started.
         </div>
       )}

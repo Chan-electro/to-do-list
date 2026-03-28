@@ -25,19 +25,20 @@ function CompletionRate({ habitId }: { habitId: string }) {
   return (
     <div className="mt-2">
       <div className="flex items-center justify-between mb-1">
-        <span className="font-mono text-[10px]" style={{ color: "#8888AA" }}>
+        <span className="font-mono text-[10px] text-[#94A3B8]">
           90-day rate
         </span>
-        <span className="font-mono text-[10px]" style={{ color: "#8888AA" }}>
+        <span className="font-mono text-[10px] text-[#94A3B8]">
           {rate}%
         </span>
       </div>
       <Progress
         value={rate}
-        className="h-1 bg-white/[0.06]"
+        className="h-1"
         style={
           {
-            "--progress-color": rate >= 70 ? "#00FF88" : rate >= 40 ? "#FFB800" : "#FF3366",
+            background: "rgba(75,142,255,0.08)",
+            "--progress-color": "#4B8EFF",
           } as React.CSSProperties
         }
       />
@@ -47,16 +48,23 @@ function CompletionRate({ habitId }: { habitId: string }) {
 
 function StatCard({ habit }: { habit: StreakEntry }) {
   const streak = habit.streakCurrent;
-  const streakColor = streak >= 7 ? "#00FF88" : streak > 0 ? "#FFB800" : "#8888AA";
-  const habitColor = habit.color ?? "#00D4FF";
+  const streakColor = streak >= 7 ? "#34D399" : streak > 0 ? "#FCD34D" : "#94A3B8";
 
   return (
     <div
-      className="rounded-xl p-4 transition-colors"
+      className="glass rounded-2xl p-4 transition-all duration-200"
       style={{
-        background: "rgba(26,26,62,0.6)",
-        backdropFilter: "blur(24px)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        border: "1px solid rgba(75,142,255,0.1)",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderColor =
+          "rgba(75,142,255,0.25)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(-1px)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderColor =
+          "rgba(75,142,255,0.1)";
+        (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)";
       }}
     >
       {/* Name row */}
@@ -64,12 +72,9 @@ function StatCard({ habit }: { habit: StreakEntry }) {
         <div className="flex items-center gap-2 min-w-0">
           <div
             className="w-2 h-2 rounded-full flex-shrink-0"
-            style={{ background: habitColor }}
+            style={{ background: "#4B8EFF" }}
           />
-          <span
-            className="font-mono text-sm font-medium truncate"
-            style={{ color: "#E8E8F0" }}
-          >
+          <span className="font-mono text-sm font-medium truncate text-[#F1F5F9]">
             {habit.name}
           </span>
         </div>
@@ -86,32 +91,26 @@ function StatCard({ habit }: { habit: StreakEntry }) {
       {/* Streak details */}
       <div className="grid grid-cols-2 gap-2 mb-1">
         <div>
-          <p className="font-mono text-[10px] mb-0.5" style={{ color: "#8888AA" }}>
+          <p className="font-mono text-[10px] mb-0.5 text-[#94A3B8]">
             Current
           </p>
           <p className="font-mono text-lg font-bold leading-none" style={{ color: streakColor }}>
             {streak}
-            <span
-              className="font-mono text-[10px] font-normal ml-1"
-              style={{ color: "#8888AA" }}
-            >
+            <span className="font-mono text-[10px] font-normal ml-1 text-[#94A3B8]">
               day{streak !== 1 ? "s" : ""}
             </span>
           </p>
         </div>
         <div>
-          <p className="font-mono text-[10px] mb-0.5" style={{ color: "#8888AA" }}>
+          <p className="font-mono text-[10px] mb-0.5 text-[#94A3B8]">
             Best
           </p>
           <p
             className="font-mono text-lg font-bold leading-none"
-            style={{ color: "#7B2FFF" }}
+            style={{ color: "#8B5CF6" }}
           >
             {habit.streakBest}
-            <span
-              className="font-mono text-[10px] font-normal ml-1"
-              style={{ color: "#8888AA" }}
-            >
+            <span className="font-mono text-[10px] font-normal ml-1 text-[#94A3B8]">
               day{habit.streakBest !== 1 ? "s" : ""}
             </span>
           </p>
@@ -132,8 +131,8 @@ export function HabitStats() {
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="h-28 rounded-xl animate-pulse"
-            style={{ background: "rgba(26,26,62,0.6)" }}
+            className="h-28 rounded-2xl animate-pulse"
+            style={{ background: "#0F1D30" }}
           />
         ))}
       </div>
@@ -143,15 +142,13 @@ export function HabitStats() {
   if (!streaks || streaks.length === 0) {
     return (
       <div
-        className="rounded-xl p-8 flex flex-col items-center justify-center text-center"
+        className="glass rounded-2xl p-8 flex flex-col items-center justify-center text-center"
         style={{
-          background: "rgba(26,26,62,0.6)",
-          backdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.06)",
+          border: "1px solid rgba(75,142,255,0.1)",
         }}
       >
-        <Flame className="w-8 h-8 mb-2" style={{ color: "rgba(255,184,0,0.3)" }} />
-        <p className="font-mono text-sm" style={{ color: "#8888AA" }}>
+        <Flame className="w-8 h-8 mb-2" style={{ color: "rgba(75,142,255,0.3)" }} />
+        <p className="font-mono text-sm text-[#94A3B8]">
           No streak data yet
         </p>
       </div>
@@ -160,7 +157,7 @@ export function HabitStats() {
 
   return (
     <div className="space-y-3">
-      <h2 className="font-mono text-xs uppercase tracking-widest" style={{ color: "#8888AA" }}>
+      <h2 className="font-mono text-xs uppercase tracking-widest text-[#94A3B8]">
         Streak Stats
       </h2>
       {streaks.map((habit) => (
